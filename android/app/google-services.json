@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "368921194280",
+    "project_id": "senior-design-3810b",
+    "storage_bucket": "senior-design-3810b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368921194280:android:5e6076b157acc1b986ea1d",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "368921194280-ifrjqn38og8k4sv4l5cl0ql5b3ofge4c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtzFRvR2NwMnXeXOLfPWkfEj-ynEyo0i4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "368921194280-ifrjqn38og8k4sv4l5cl0ql5b3ofge4c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
