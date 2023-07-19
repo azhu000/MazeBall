@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:myapp/pages/userHome.dart';
+import 'package:myapp/pages/userSearch.dart';
+import 'package:myapp/pages/userSettings.dart';
 
 class Navbar extends StatefulWidget {
   const Navbar({super.key});
@@ -8,66 +10,40 @@ class Navbar extends StatefulWidget {
   State<Navbar> createState() => _NavBarState();
 }
 
-//Different pages of the Nav Bar
-final List<Widget> _pages = [
-  Center(
-    child: Text(
-      'Home Page',
-      style: TextStyle(fontSize: 50),
-    ),
-  ),
-  Center(
-    child: Text(
-      'Home Page',
-      style: TextStyle(fontSize: 50),
-    ),
-  ),
-  Center(
-    child: Text(
-      'Home Page',
-      style: TextStyle(fontSize: 50),
-    ),
-  ),
-];
-
 //Functionality of the Nav Bar
 class _NavBarState extends State<Navbar>{
+  int _selectedIndex = 0;
+
+  void _navigateBottomBar(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  //Different pages of the Nav Bar 
+  final List<Widget> _pages = [
+    UserHome(),
+    UserSearch(),
+    UserSettings(),
+  ];
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: 
-        Container(
-          color: Colors.black,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
-            child: GNav(
-              backgroundColor: Colors.black,
-              color: Colors.white,
-              activeColor: Colors.white,
-              tabBackgroundColor: Colors.grey.shade800,
-              gap: 8,
-              onTabChange: (index) {
-                print(index);
-              },
-              padding: EdgeInsets.all(16),
-                tabs: const [
-                  GButton(
-                    icon: Icons.home,
-                    text: 'Home',
-                  ),
-                  GButton(
-                    icon: Icons.search,
-                    text: 'Search',
-                  ),
-                  GButton(
-                    icon: Icons.settings,
-                    text: 'Settings',
-                  ),
-                ],
-            ),
-          ),
-        ),
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _navigateBottomBar,
+        type: BottomNavigationBarType.fixed,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+        ]
+      )
     );
   }
 
 }
+
