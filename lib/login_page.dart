@@ -123,8 +123,32 @@ class _LoginPageState extends State<LoginPage> {
                       filled: true),
                 ),
               ),
+              SizedBox(height: 10),
 
-              SizedBox(height: 20),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.end,
+              //     children: [
+              //       GestureDetector(
+              //         onTap: () {
+              //           Navigator.push(context, MaterialPageRoute(builder: ((context) {
+              //             return ForgotPasswordPage();
+              //           })))
+              //         },
+              //         child: Text(
+              //           'Forgot Password?',
+              //           style: TextStyle(
+              //             color: Colors.blue,
+              //             fontWeight: FontWeight.bold,
+              //           ),
+              //         ),
+              //       )
+              //     ],
+              //   ),
+              // ),
+
+              SizedBox(height: 10),
 
               //sign in button
               Padding(

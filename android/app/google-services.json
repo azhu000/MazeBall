@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "368921194280",
+    "firebase_url": "https://senior-design-3810b-default-rtdb.firebaseio.com",
     "project_id": "senior-design-3810b",
     "storage_bucket": "senior-design-3810b.appspot.com"
   },
@@ -14,7 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "368921194280-ifrjqn38og8k4sv4l5cl0ql5b3ofge4c.apps.googleusercontent.com",
+          "client_id": "368921194280-mil4am75l9bkc3j1799cn8hn5l94p1rh.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -29,6 +30,13 @@
             {
               "client_id": "368921194280-ifrjqn38og8k4sv4l5cl0ql5b3ofge4c.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "368921194280-ikl21rnkod907bvirq5g57cpu05sa00q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.seniorDesign.myapp"
+              }
             }
           ]
         }
