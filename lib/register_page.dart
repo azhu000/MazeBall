@@ -90,13 +90,13 @@ class _RegisterPageState extends State<RegisterPage>{
               mainAxisAlignment: MainAxisAlignment.center,
               children:[
               
-              //logo
-              Icon(
-                Icons.phone_android,
-                size: 100
-                ),
+              // //logo
+              // Icon(
+              //   Icons.phone_android,
+              //   size: 100
+              //   ),
           
-                SizedBox(height: 50), 
+              //   SizedBox(height: 50), 
                 
               // Welcome message
               Text(

@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>55435223206-fj77a1fbv1e8tfmjk19ilgjhgc59njdd.apps.googleusercontent.com</string>
+	<string>368921194280-ikl21rnkod907bvirq5g57cpu05sa00q.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.55435223206-fj77a1fbv1e8tfmjk19ilgjhgc59njdd</string>
+	<string>com.googleusercontent.apps.368921194280-ikl21rnkod907bvirq5g57cpu05sa00q</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDnXDNgbO3fH5waFjBm1o7V3QCYsfiqybg</string>
+	<string>AIzaSyAPL9CHU8HPQDo5Z21I94dgfwktp-jaXV0</string>
 	<key>GCM_SENDER_ID</key>
-	<string>55435223206</string>
+	<string>368921194280</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.seniorDesign.myapp</string>
 	<key>PROJECT_ID</key>
-	<string>seniordesigngyroscope</string>
+	<string>senior-design-3810b</string>
 	<key>STORAGE_BUCKET</key>
-	<string>seniordesigngyroscope.appspot.com</string>
+	<string>senior-design-3810b.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:55435223206:ios:157ec7b9643a5b14a7d467</string>
+	<string>1:368921194280:ios:9846839be453a42e86ea1d</string>
+	<key>DATABASE_URL</key>
+	<string>https://senior-design-3810b-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>
