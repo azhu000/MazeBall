@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/home_page.dart';
 import 'package:myapp/pages/userHome.dart';
 import 'package:myapp/pages/userSearch.dart';
 import 'package:myapp/pages/userSettings.dart';
@@ -22,9 +23,11 @@ class _NavBarState extends State<Navbar>{
 
   //Different pages of the Nav Bar 
   final List<Widget> _pages = [
-    UserHome(),
+    HomePage(),
+    //UserHome(),
     UserSearch(),
     UserSettings(),
+    
   ];
 
 
