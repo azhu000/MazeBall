@@ -48,17 +48,6 @@ class _HomePageState extends State<HomePage>{
               color: Colors.deepPurple,
               child: Text('Sign Out'),
               )
-            // Expanded(
-            //   child: ListView.builder(
-            //     itemCount: 3,
-            //     itemBuilder: (context,index){
-            //     return ListTile(
-            //       title: Text('name')
-
-            //     );
-            //   },
-            //   ),
-            //   ),
           ],
         ),
         ),
