@@ -40,6 +40,7 @@ dependencies:
   firebase_core: ^2.14.0
   cloud_firestore: ^4.8.2
   google_nav_bar: ^5.0.6
+  sensors_plus: ^3.0.3
 
 dev_dependencies:
   flutter_test:
