@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/home_page.dart';
+import 'package:myapp/maze.dart';
+import 'package:myapp/newball.dart';
 import 'package:myapp/pages/userHome.dart';
 import 'package:myapp/pages/userSearch.dart';
 import 'package:myapp/pages/userSettings.dart';
 import 'package:myapp/ball.dart';
+import "test.dart";
 
 class Navbar extends StatefulWidget {
   const Navbar({super.key});
@@ -29,6 +32,9 @@ class _NavBarState extends State<Navbar> {
     UserSearch(),
     UserSettings(),
     BallGyro(),
+    // MazeApp()
+    newBall(),
+    SensorDataWidget()
   ];
 
   @override
@@ -45,7 +51,13 @@ class _NavBarState extends State<Navbar> {
                   icon: Icon(Icons.search), label: 'Search'),
               BottomNavigationBarItem(
                   icon: Icon(Icons.settings), label: 'Settings'),
-              BottomNavigationBarItem(icon: Icon(Icons.circle), label: "Ball")
+              BottomNavigationBarItem(icon: Icon(Icons.circle), label: "Ball"),
+              // BottomNavigationBarItem(
+              // icon: Icon(Icons.question_mark_sharp), label: "Maze")
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.question_mark_sharp), label: "Ball2"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.question_mark_sharp), label: "test"),
             ]));
   }
 }

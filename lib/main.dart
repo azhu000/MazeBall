@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'navbar.dart';
 import 'package:myapp/main_page.dart';
+import 'package:flutter_sensors/flutter_sensors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
