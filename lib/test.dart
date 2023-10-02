@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/rendering.dart';
 
 import 'package:sensors_plus/sensors_plus.dart';
 
@@ -39,30 +40,45 @@ class _SensorDataWidgetState extends State<SensorDataWidget> {
             // Display or process the sensor data as needed
             // For example, you can show the data in Text widgets
             if (snapshot.hasData) {
-              print("Test:" +
-                  snapshot.data!.x.toString() +
-                  snapshot.data!.y.toString());
-              _circlePosition = Offset(
-                  _circlePosition!.dx + (gyroscopeData.y * 7),
-                  _circlePosition!.dy + (gyroscopeData.x * 7));
+              // print("Test:" +
+              //     snapshot.data!.x.toString() +
+              //     snapshot.data!.y.toString());
+              if ((_circlePosition!.dx + (gyroscopeData.y * 10) < 33) ||
+                  ((_circlePosition!.dx + (gyroscopeData.y * 10) > 350))) {
+                print("Out of bounds x!");
+              } else if ((_circlePosition!.dy + (gyroscopeData.x * 10) < 275) ||
+                  ((_circlePosition!.dy + (gyroscopeData.x * 10) > 745))) {
+                print("Out of bounds y!");
+              } else {
+                _circlePosition = Offset(
+                    _circlePosition!.dx + (gyroscopeData.y * 10),
+                    _circlePosition!.dy + (gyroscopeData.x * 10));
+              }
             }
 
             return Stack(
               // mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Scaffold(
-                    body: SafeArea(
-                  child: Transform.translate(
-                      offset: Offset(_circlePosition!.dx, _circlePosition!.dy),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black)),
-                        height: _circleSize,
-                        width: _circleSize,
-                      )),
-                )),
+                Positioned(
+                    top: 275,
+                    left: 32,
+                    child: Container(
+                      height: 500,
+                      width: 350,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          border: Border.all(color: Colors.blue)),
+                    )),
+                Transform.translate(
+                    offset: Offset(_circlePosition!.dx, _circlePosition!.dy),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.black)),
+                      height: _circleSize,
+                      width: _circleSize,
+                    )),
                 Center(
                     child: Column(
                   children: [
@@ -76,6 +92,9 @@ class _SensorDataWidgetState extends State<SensorDataWidget> {
                     Text("X: ${gyroscopeData.x}"),
                     Text("Y: ${gyroscopeData.y}"),
                     Text("Z: ${gyroscopeData.z}"),
+                    SizedBox(height: 16),
+                    Text("xPos: ${_circlePosition!.dx}"),
+                    Text("yPos: ${_circlePosition!.dy}"),
                   ],
                 )),
               ],

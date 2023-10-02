@@ -5,13 +5,13 @@ import 'package:sensors_plus/sensors_plus.dart';
 class BallGyro extends StatelessWidget {
   // const BallGyro({super.key});
 
-  double posX = 180, posY = 350;
+  double posX = 10, posY = 10;
   bool collided = false;
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.all(100),
-        padding: const EdgeInsets.all(100),
+        margin: const EdgeInsets.all(50),
+        padding: const EdgeInsets.all(200),
         decoration: BoxDecoration(border: Border.all(color: Colors.black)),
         child: StreamBuilder<GyroscopeEvent>(
             stream: SensorsPlatform.instance.gyroscopeEvents,
@@ -26,7 +26,7 @@ class BallGyro extends StatelessWidget {
               return Transform.translate(
                 offset: Offset(posX, posY),
                 child: const CircleAvatar(
-                  radius: 20,
+                  radius: 30,
                   backgroundColor: Colors.red,
                 ),
               );
