@@ -18,8 +18,8 @@ class _SensorDataWidgetState extends State<SensorDataWidget> {
     _circlePosition ??= Offset(
         (MediaQuery.of(context).size.width - _circleSize) / 2,
         (MediaQuery.of(context).size.height - _circleSize) / 2);
-    return StreamBuilder<AccelerometerEvent>(
-      stream: accelerometerEvents,
+    return StreamBuilder<UserAccelerometerEvent>(
+      stream: userAccelerometerEvents,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return CircularProgressIndicator(); // Loading indicator
@@ -43,16 +43,30 @@ class _SensorDataWidgetState extends State<SensorDataWidget> {
               // print("Test:" +
               //     snapshot.data!.x.toString() +
               //     snapshot.data!.y.toString());
-              if ((_circlePosition!.dx + (gyroscopeData.y * 10) < 33) ||
-                  ((_circlePosition!.dx + (gyroscopeData.y * 10) > 350))) {
+              if ((_circlePosition!.dx +
+                          (gyroscopeData.y * accelerometerData.y) <
+                      33) ||
+                  ((_circlePosition!.dx +
+                          (gyroscopeData.y * accelerometerData.y) >
+                      350))) {
                 print("Out of bounds x!");
-              } else if ((_circlePosition!.dy + (gyroscopeData.x * 10) < 275) ||
-                  ((_circlePosition!.dy + (gyroscopeData.x * 10) > 745))) {
+                _circlePosition = Offset(
+                    (MediaQuery.of(context).size.width - _circleSize) / 2,
+                    (MediaQuery.of(context).size.height - _circleSize) / 2);
+              } else if ((_circlePosition!.dy +
+                          (gyroscopeData.x * accelerometerData.x) <
+                      275) ||
+                  ((_circlePosition!.dy +
+                          (gyroscopeData.x * accelerometerData.x) >
+                      745))) {
                 print("Out of bounds y!");
+                _circlePosition = Offset(
+                    (MediaQuery.of(context).size.width - _circleSize) / 2,
+                    (MediaQuery.of(context).size.height - _circleSize) / 2);
               } else {
                 _circlePosition = Offset(
-                    _circlePosition!.dx + (gyroscopeData.y * 10),
-                    _circlePosition!.dy + (gyroscopeData.x * 10));
+                    _circlePosition!.dx + (gyroscopeData.y * 3),
+                    _circlePosition!.dy + (gyroscopeData.x * 3));
               }
             }
 
