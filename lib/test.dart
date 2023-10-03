@@ -13,6 +13,7 @@ class SensorDataWidget extends StatefulWidget {
 class _SensorDataWidgetState extends State<SensorDataWidget> {
   final double _circleSize = 30;
   Offset? _circlePosition;
+  Offset? previous_position;
   @override
   Widget build(BuildContext context) {
     _circlePosition ??= Offset(
@@ -50,9 +51,7 @@ class _SensorDataWidgetState extends State<SensorDataWidget> {
                           (gyroscopeData.y * accelerometerData.y) >
                       350))) {
                 print("Out of bounds x!");
-                _circlePosition = Offset(
-                    (MediaQuery.of(context).size.width - _circleSize) / 2,
-                    (MediaQuery.of(context).size.height - _circleSize) / 2);
+                _circlePosition = previous_position;
               } else if ((_circlePosition!.dy +
                           (gyroscopeData.x * accelerometerData.x) <
                       275) ||
@@ -60,13 +59,15 @@ class _SensorDataWidgetState extends State<SensorDataWidget> {
                           (gyroscopeData.x * accelerometerData.x) >
                       745))) {
                 print("Out of bounds y!");
+
                 _circlePosition = Offset(
-                    (MediaQuery.of(context).size.width - _circleSize) / 2,
-                    (MediaQuery.of(context).size.height - _circleSize) / 2);
+                    previous_position!.dx + (-accelerometerData.x),
+                    previous_position!.dy + (-accelerometerData.y));
               } else {
+                previous_position = _circlePosition;
                 _circlePosition = Offset(
-                    _circlePosition!.dx + (gyroscopeData.y * 3),
-                    _circlePosition!.dy + (gyroscopeData.x * 3));
+                    _circlePosition!.dx + (gyroscopeData.y * 5),
+                    _circlePosition!.dy + (gyroscopeData.x * 5));
               }
             }
 
