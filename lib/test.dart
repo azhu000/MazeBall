@@ -11,11 +11,11 @@ class SensorDataWidget extends StatefulWidget {
 }
 
 class _SensorDataWidgetState extends State<SensorDataWidget> {
-  final double _circleSize = 10;
+  final double _circleSize = 25;
   Offset? _circlePosition;
   // Offset? previous_position;
 
-  final double ballMass = 10.0;
+  final double ballMass = 3.0;
   final double gravConst = 0.1;
   double xVelocity = 0.0;
   double yVelocity = 0.0;
@@ -24,6 +24,8 @@ class _SensorDataWidgetState extends State<SensorDataWidget> {
   double xForce =
       0.0; // this is for when i decide to factor in mass into the equationx
   double yForce = 0.0;
+  final double elasticity =
+      2; // this should never be below 1 (1 means kinetic energy is conserved) for now 2 is best?
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +125,7 @@ class _SensorDataWidgetState extends State<SensorDataWidget> {
                 // _circlePosition = previous_position;
                 xBallAcceleration = 0;
                 yBallAcceleration = 0;
-                xVelocity = xVelocity / 2;
+                xVelocity = xVelocity / elasticity;
                 _circlePosition = Offset(
                     _circlePosition!.dx + (-xVelocity + xBallAcceleration),
                     _circlePosition!.dy + (yVelocity + yBallAcceleration));
@@ -135,7 +137,7 @@ class _SensorDataWidgetState extends State<SensorDataWidget> {
                 print("Out of bounds y!");
                 xBallAcceleration = 0;
                 yBallAcceleration = 0;
-                yVelocity = yVelocity / 2;
+                yVelocity = yVelocity / elasticity;
                 _circlePosition = Offset(
                     _circlePosition!.dx + (xVelocity + xBallAcceleration),
                     _circlePosition!.dy + (-yVelocity + yBallAcceleration));
