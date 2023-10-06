@@ -1,0 +1,30 @@
+{
+   "data" : [
+      {
+         "borough" : "Manhattan",
+         "cuisine" : "Mexican",
+         "grade" : "",
+         "grade_date" : "",
+         "inspection_date" : "11/25/2019",
+         "restaurant_id" : "50002052",
+         "restaurant_name" : "OTTO'S TACOS",
+         "score" : "19",
+         "violation_code" : "06C",
+         "violation_description" : "Food not protected from potential source of contamination during storage, preparation, transportation, display or service.",
+         "zipcode" : "10003"
+      },
+      {
+         "borough" : "Manhattan",
+         "cuisine" : "Mexican",
+         "grade" : "A",
+         "grade_date" : "07/02/2018",
+         "inspection_date" : "07/02/2018",
+         "restaurant_id" : "50002052",
+         "restaurant_name" : "OTTO'S TACOS",
+         "score" : "10",
+         "violation_code" : "10I",
+         "violation_description" : "Single service item reused, improperly stored, dispensed; not used when required.",
+         "zipcode" : "10003"
+      }
+   ]
+}

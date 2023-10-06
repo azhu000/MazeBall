@@ -13,12 +13,33 @@ class SensorDataWidget extends StatefulWidget {
 class _SensorDataWidgetState extends State<SensorDataWidget> {
   final double _circleSize = 30;
   Offset? _circlePosition;
-  Offset? previous_position;
+  // Offset? previous_position;
+
+  final double ballMass = 1.0;
+  final double gravConst = 0.7;
+  double xVelocity = 0.0;
+  double yVelocity = 0.0;
+  double xBallAcceleration = 0.0;
+  double yBallAcceleration = 0.0;
+  double xForce =
+      0.0; // this is for when i decide to factor in mass into the equationx
+  double yForce = 0.0;
+
   @override
   Widget build(BuildContext context) {
-    _circlePosition ??= Offset(
-        (MediaQuery.of(context).size.width - _circleSize) / 2,
-        (MediaQuery.of(context).size.height - _circleSize) / 2);
+    double topOffset = MediaQuery.of(context).size.height / 3;
+    double leftOffset = MediaQuery.of(context).size.width / 12.5;
+    double widthRect = (MediaQuery.of(context).size.width -
+        (2 *
+            leftOffset)); // this is the width of the  width of the bounding rectangle
+    double heightRect = MediaQuery.of(context).size.height /
+        1.75; // this will be the length of the height of the bounding rectangle
+
+    _circlePosition ??= Offset(leftOffset + (widthRect - _circleSize) / 2,
+        topOffset + (heightRect - _circleSize) / 2);
+    print(leftOffset);
+    print(_circlePosition!.dx + (xVelocity + xBallAcceleration));
+    print((MediaQuery.of(context).size.height - topOffset));
     return StreamBuilder<UserAccelerometerEvent>(
       stream: userAccelerometerEvents,
       builder: (context, snapshot) {
@@ -44,30 +65,97 @@ class _SensorDataWidgetState extends State<SensorDataWidget> {
               // print("Test:" +
               //     snapshot.data!.x.toString() +
               //     snapshot.data!.y.toString());
-              if ((_circlePosition!.dx +
-                          (gyroscopeData.y * accelerometerData.y) <
-                      33) ||
-                  ((_circlePosition!.dx +
-                          (gyroscopeData.y * accelerometerData.y) >
-                      350))) {
-                print("Out of bounds x!");
-                _circlePosition = previous_position;
-              } else if ((_circlePosition!.dy +
-                          (gyroscopeData.x * accelerometerData.x) <
-                      275) ||
-                  ((_circlePosition!.dy +
-                          (gyroscopeData.x * accelerometerData.x) >
-                      745))) {
-                print("Out of bounds y!");
+
+              /// ### top left corner border
+              if ((_circlePosition!.dx + (xVelocity + xBallAcceleration) <
+                      leftOffset) &&
+                  (_circlePosition!.dy + (yVelocity + yBallAcceleration) <
+                      topOffset)) {
+                print("Uhoh TOP LEFT!");
 
                 _circlePosition = Offset(
-                    previous_position!.dx + (-accelerometerData.x),
-                    previous_position!.dy + (-accelerometerData.y));
-              } else {
-                previous_position = _circlePosition;
+                    _circlePosition!.dx + (-xVelocity + xBallAcceleration),
+                    _circlePosition!.dy + (-yVelocity + yBallAcceleration));
+              }
+
+              /// ### top right corner border
+              else if ((_circlePosition!.dx + (xVelocity + xBallAcceleration) >
+                      leftOffset + widthRect - _circleSize) &&
+                  (_circlePosition!.dy + (yVelocity + yBallAcceleration) <
+                      topOffset)) {
+                print("Uhoh! TOP RIGHT");
+
                 _circlePosition = Offset(
-                    _circlePosition!.dx + (gyroscopeData.y * 5),
-                    _circlePosition!.dy + (gyroscopeData.x * 5));
+                    _circlePosition!.dx - (xVelocity + xBallAcceleration),
+                    _circlePosition!.dy - (yVelocity + yBallAcceleration));
+              }
+
+              /// ### bottom left corner border
+              else if ((_circlePosition!.dx + (xVelocity + xBallAcceleration) <
+                      leftOffset) &&
+                  (_circlePosition!.dy + (yVelocity + yBallAcceleration) >
+                      (topOffset + heightRect - _circleSize))) {
+                print("Uhoh! BOTTOM LEFT");
+
+                _circlePosition = Offset(
+                    _circlePosition!.dx + (-xVelocity + xBallAcceleration),
+                    _circlePosition!.dy + (-yVelocity + yBallAcceleration));
+              }
+
+              /// ### bottom right corner border
+              else if ((_circlePosition!.dx + (xVelocity + xBallAcceleration) >
+                      leftOffset + widthRect - _circleSize) &&
+                  (_circlePosition!.dy + (yVelocity + yBallAcceleration) >
+                      (topOffset + heightRect - _circleSize))) {
+                print("Uhoh! BOTTOM RIGHT");
+
+                _circlePosition = Offset(
+                    _circlePosition!.dx + (-xVelocity + xBallAcceleration),
+                    _circlePosition!.dy + (-yVelocity + yBallAcceleration));
+              }
+
+              /// ### now to handle the cases where ball is only touching one wall
+              else if ((_circlePosition!.dx + (xVelocity + xBallAcceleration) <
+                      leftOffset) ||
+                  ((_circlePosition!.dx + (xVelocity + xBallAcceleration) >
+                      (leftOffset + widthRect - _circleSize)))) {
+                print("Out of bounds x!");
+                // _circlePosition = previous_position;
+                xBallAcceleration = 0;
+                yBallAcceleration = 0;
+                xVelocity = xVelocity / 2;
+                _circlePosition = Offset(
+                    _circlePosition!.dx + (-xVelocity + xBallAcceleration),
+                    _circlePosition!.dy + (yVelocity + yBallAcceleration));
+              } else if ((_circlePosition!.dy +
+                          (yVelocity + yBallAcceleration) <
+                      topOffset) ||
+                  ((_circlePosition!.dy + (yVelocity + yBallAcceleration) >
+                      (topOffset + heightRect - _circleSize)))) {
+                print("Out of bounds y!");
+                xBallAcceleration = 0;
+                yBallAcceleration = 0;
+                yVelocity = yVelocity / 2;
+                _circlePosition = Offset(
+                    _circlePosition!.dx + (xVelocity + xBallAcceleration),
+                    _circlePosition!.dy + (-yVelocity + yBallAcceleration));
+
+                // _circlePosition = previous_position;
+              } else {
+                // previous_position = _circlePosition;
+
+                xBallAcceleration = gravConst * gyroscopeData.y;
+                yBallAcceleration = gravConst * gyroscopeData.x;
+
+                xForce = xBallAcceleration * ballMass;
+                yForce = yBallAcceleration * ballMass;
+
+                _circlePosition = Offset(
+                    _circlePosition!.dx + (xVelocity + xBallAcceleration),
+                    _circlePosition!.dy + (yVelocity + yBallAcceleration));
+
+                xVelocity = xVelocity + xBallAcceleration;
+                yVelocity = yVelocity + yBallAcceleration;
               }
             }
 
@@ -75,11 +163,11 @@ class _SensorDataWidgetState extends State<SensorDataWidget> {
               // mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Positioned(
-                    top: 275,
-                    left: 32,
+                    top: topOffset,
+                    left: leftOffset,
                     child: Container(
-                      height: 500,
-                      width: 350,
+                      height: heightRect,
+                      width: widthRect,
                       decoration: BoxDecoration(
                           shape: BoxShape.rectangle,
                           border: Border.all(color: Colors.blue)),

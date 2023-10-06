@@ -1,0 +1,69 @@
+{
+   "data" : [
+      {
+         "borough" : "Manhattan",
+         "cuisine" : "Italian",
+         "grade" : "",
+         "grade_date" : "",
+         "inspection_date" : "03/12/2018",
+         "restaurant_id" : "40364373",
+         "restaurant_name" : "ISLE OF CAPRI RESTURANT",
+         "score" : "38",
+         "violation_code" : "06C",
+         "violation_description" : "Food not protected from potential source of contamination during storage, preparation, transportation, display or service.",
+         "zipcode" : "10065"
+      },
+      {
+         "borough" : "Manhattan",
+         "cuisine" : "Italian",
+         "grade" : "",
+         "grade_date" : "",
+         "inspection_date" : "02/03/2020",
+         "restaurant_id" : "40364373",
+         "restaurant_name" : "ISLE OF CAPRI RESTURANT",
+         "score" : "19",
+         "violation_code" : "08A",
+         "violation_description" : "Facility not vermin proof. Harborage or conditions conducive to attracting vermin to the premises and/or allowing vermin to exist.",
+         "zipcode" : "10065"
+      },
+      {
+         "borough" : "Manhattan",
+         "cuisine" : "Italian",
+         "grade" : "",
+         "grade_date" : "",
+         "inspection_date" : "11/03/2017",
+         "restaurant_id" : "40364668",
+         "restaurant_name" : "MARCHIS RESTAURANT",
+         "score" : "11",
+         "violation_code" : "04L",
+         "violation_description" : "Evidence of mice or live mice present in facility's food and/or non-food areas.",
+         "zipcode" : "10016"
+      },
+      {
+         "borough" : "Manhattan",
+         "cuisine" : "Italian",
+         "grade" : "",
+         "grade_date" : "",
+         "inspection_date" : "08/14/2017",
+         "restaurant_id" : "40365098",
+         "restaurant_name" : "FORLINIS RESTAURANT",
+         "score" : "28",
+         "violation_code" : "06D",
+         "violation_description" : "Food contact surface not properly washed, rinsed and sanitized after each use and following any activity when contamination may have occurred.",
+         "zipcode" : "10013"
+      },
+      {
+         "borough" : "Manhattan",
+         "cuisine" : "Italian",
+         "grade" : "",
+         "grade_date" : "",
+         "inspection_date" : "01/02/2018",
+         "restaurant_id" : "40365293",
+         "restaurant_name" : "ANGELO OF MULBERRY ST.",
+         "score" : "37",
+         "violation_code" : "10F",
+         "violation_description" : "Non-food contact surface improperly constructed. Unacceptable material used. Non-food contact surface or equipment improperly maintained and/or not properly sealed, raised, spaced or movable to allow accessibility for cleaning on all sides, above and underneath the unit.",
+         "zipcode" : "10013"
+      }
+   ]
+}
