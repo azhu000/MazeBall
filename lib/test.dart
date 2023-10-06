@@ -11,12 +11,12 @@ class SensorDataWidget extends StatefulWidget {
 }
 
 class _SensorDataWidgetState extends State<SensorDataWidget> {
-  final double _circleSize = 30;
+  final double _circleSize = 10;
   Offset? _circlePosition;
   // Offset? previous_position;
 
-  final double ballMass = 1.0;
-  final double gravConst = 0.7;
+  final double ballMass = 10.0;
+  final double gravConst = 0.1;
   double xVelocity = 0.0;
   double yVelocity = 0.0;
   double xBallAcceleration = 0.0;
@@ -151,11 +151,11 @@ class _SensorDataWidgetState extends State<SensorDataWidget> {
                 yForce = yBallAcceleration * ballMass;
 
                 _circlePosition = Offset(
-                    _circlePosition!.dx + (xVelocity + xBallAcceleration),
-                    _circlePosition!.dy + (yVelocity + yBallAcceleration));
+                    _circlePosition!.dx + (xVelocity + xForce),
+                    _circlePosition!.dy + (yVelocity + yForce));
 
-                xVelocity = xVelocity + xBallAcceleration;
-                yVelocity = yVelocity + yBallAcceleration;
+                xVelocity = xVelocity + xForce;
+                yVelocity = yVelocity + yForce;
               }
             }
 
