@@ -44,6 +44,7 @@ dependencies:
   flutter_sensors: ^1.0.1
   maze_builder: ^1.0.1
   maze: ^3.0.0
+  wakelock: ^0.6.2
 
 dev_dependencies:
   flutter_test:
