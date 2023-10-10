@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wakelock/wakelock.dart';
 
 import 'package:sensors_plus/sensors_plus.dart';
 
@@ -47,7 +46,7 @@ class _SensorDataWidgetState extends State<SensorDataWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Wakelock.enable();
+    // Wakelock.enable();
     double topOffset = MediaQuery.of(context).size.height / 2.25;
     double leftOffset = MediaQuery.of(context).size.width / 12.5;
     double widthRect = (MediaQuery.of(context).size.width -
@@ -209,7 +208,7 @@ class _SensorDataWidgetState extends State<SensorDataWidget> {
                     Slider(
                         value: ballMass,
                         label: "${ballMass.toStringAsFixed(3)}",
-                        min: .1,
+                        min: .01,
                         max: 5,
                         // divisions: 11,
                         onChanged: (double value) {

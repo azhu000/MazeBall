@@ -12,25 +12,23 @@ class ballMaze extends StatefulWidget {
 }
 
 class _ballMazeDataWidgetState extends State<ballMaze> {
-  double topOffset =
-      MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.height /
-          2.25;
-  double leftOffset =
-      MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width /
-          12.5;
-  late double widthRect = MediaQueryData.fromWindow(
-              WidgetsBinding.instance.window)
-          .size
-          .width -
-      (2 *
-          leftOffset); // this is the width of the  width of the bounding rectangle
-  double heightRect = MediaQueryData.fromWindow(WidgetsBinding.instance.window)
-          .size
-          .height /
-      2.1; // this will be the length of the height of the bounding rectangle
+  double topOffset = double.parse(
+      (MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.height /
+              2.25)
+          .toStringAsFixed(4));
+  double leftOffset = double.parse(
+      (MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width /
+              12.5)
+          .toStringAsFixed(4));
+  late double widthRect = double.parse(
+      (MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width -
+              (2 * leftOffset))
+          .toStringAsFixed(
+              4)); // this is the width of the  width of the bounding rectangle
 
   double _circleSize = 25;
   Offset? _circlePosition;
+  Offset? prev_pos;
 
   double ballMass = 2.0;
   double gravConst = 0.5;
@@ -44,49 +42,19 @@ class _ballMazeDataWidgetState extends State<ballMaze> {
   double elasticity = // honestly a bad name will change eventually
       1.5; // this should never be below 1 (1 means kinetic energy is conserved) for now 2 is best performing
 
-  // Widget _ballInfo(BuildContext context) {
-  //   return new AlertDialog(
-  //     title: const Text('Current ball information'),
-  //     content: new Column(
-  //       mainAxisSize: MainAxisSize.min,
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: <Widget>[],
-  //     ),
-  //     actions: <Widget>[
-  //       TextButton(
-  //         onPressed: () {
-  //           Navigator.of(context).pop();
-  //         },
-  //         // style: ButtonStyle( textStyle: color:( Colors.blue)),
-  //         child: const Text('Close'),
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // Widget _mazeWalls(BuildContext context) {
-  //   return Scaffold(
-  //     body: Container(
-  //         child: Column(
-  //       children: [for (var i in wallCoords) Text(i.toString())],
-  //     )),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     Wakelock.enable();
 
-    double cellLength = sqrt((widthRect * heightRect) / 30);
-    // print(widthRect * heightRect);
-    // print(sqrt(cellLength));
+    double cellLength = sqrt((widthRect * widthRect) / 30);
+
     print(cellLength);
 
     List<List<dynamic>> wallCoords = [
-      [topOffset, leftOffset, heightRect, widthRect],
+      [topOffset, leftOffset, widthRect, widthRect],
       [
-        topOffset + (cellLength * 0),
-        leftOffset + (cellLength * 0),
+        topOffset + (cellLength * 0), //x
+        leftOffset + (cellLength * 0), //y
         cellLength * 1,
         1.0
       ], // first two is location of first point, 3rd is the length, 4th is width (For vertical lines) , reverse 3,4 for horizontal
@@ -182,14 +150,32 @@ class _ballMazeDataWidgetState extends State<ballMaze> {
     // print(leftOffset);
     // print(_circlePosition!.dx + (xVelocity + xBallAcceleration));
     // print((MediaQuery.of(context).size.height - topOffset));
-    return StreamBuilder<UserAccelerometerEvent>(
-      stream: userAccelerometerEvents,
+    return StreamBuilder<AccelerometerEvent>(
+      stream: accelerometerEvents,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return CircularProgressIndicator(); // Loading indicator if no data
         }
 
         final accelerometerData = snapshot.data!;
+
+        double x = accelerometerData.x,
+            y = accelerometerData.y,
+            z = accelerometerData.z;
+        double norm_Of_g = sqrt(accelerometerData.x * accelerometerData.x +
+            accelerometerData.y * accelerometerData.y +
+            accelerometerData.z * accelerometerData.z);
+        x = accelerometerData.x / norm_Of_g;
+        y = accelerometerData.y / norm_Of_g;
+        z = accelerometerData.z / norm_Of_g;
+
+        // double xInclination = -(asin(x) * (180 / pi));
+        // double yInclination = (acos(y) * (180 / pi));
+        // double zInclination = (atan(z) * (180 / pi));
+
+        double xInclination = -(asin(x));
+        double yInclination = (acos(y));
+        double zInclination = (atan(z));
 
         return StreamBuilder<GyroscopeEvent>(
           stream: gyroscopeEvents,
@@ -203,16 +189,24 @@ class _ballMazeDataWidgetState extends State<ballMaze> {
             // After this there is access to both accelerometer data and gyroscope data.
 
             if (snapshot.hasData) {
+              // oh boy here we go its the start of generalizing ball movements...
+
+              // remember wallcoords[xCoord, yCoord, height, width]
+
               /// ### top left corner
               if ((_circlePosition!.dx + (xVelocity + xBallAcceleration) <
                       leftOffset) &&
                   (_circlePosition!.dy + (yVelocity + yBallAcceleration) <
                       topOffset)) {
                 print("Uhoh TOP LEFT!");
+                xVelocity = xVelocity * -cos(pi / 4);
+                yVelocity = yVelocity * -sin(pi / 4);
+                xBallAcceleration = -xBallAcceleration;
+                yBallAcceleration = -yBallAcceleration;
 
                 _circlePosition = Offset(
-                    _circlePosition!.dx + (-xVelocity + xBallAcceleration),
-                    _circlePosition!.dy + (-yVelocity + yBallAcceleration));
+                    _circlePosition!.dx + (xVelocity + xBallAcceleration),
+                    _circlePosition!.dy + (yVelocity + yBallAcceleration));
               }
 
               /// ### top right corner border
@@ -221,34 +215,46 @@ class _ballMazeDataWidgetState extends State<ballMaze> {
                   (_circlePosition!.dy + (yVelocity + yBallAcceleration) <
                       topOffset)) {
                 print("Uhoh! TOP RIGHT");
+                xVelocity = xVelocity * -cos(pi / 4);
+                yVelocity = yVelocity * -sin(pi / 4);
+                xBallAcceleration = -xBallAcceleration;
+                yBallAcceleration = -yBallAcceleration;
 
                 _circlePosition = Offset(
-                    _circlePosition!.dx - (xVelocity + xBallAcceleration),
-                    _circlePosition!.dy - (yVelocity + yBallAcceleration));
+                    _circlePosition!.dx + (xVelocity + xBallAcceleration),
+                    _circlePosition!.dy + (yVelocity + yBallAcceleration));
               }
 
               /// ### bottom left corner border
               else if ((_circlePosition!.dx + (xVelocity + xBallAcceleration) <
                       leftOffset) &&
                   (_circlePosition!.dy + (yVelocity + yBallAcceleration) >
-                      (topOffset + heightRect - _circleSize))) {
+                      (topOffset + widthRect - _circleSize))) {
                 print("Uhoh! BOTTOM LEFT");
+                xVelocity = xVelocity * -cos(pi / 4);
+                yVelocity = yVelocity * -sin(pi / 4);
+                xBallAcceleration = -xBallAcceleration;
+                yBallAcceleration = -yBallAcceleration;
 
                 _circlePosition = Offset(
-                    _circlePosition!.dx + (-xVelocity + xBallAcceleration),
-                    _circlePosition!.dy + (-yVelocity + yBallAcceleration));
+                    _circlePosition!.dx + (xVelocity + xBallAcceleration),
+                    _circlePosition!.dy + (yVelocity + yBallAcceleration));
               }
 
               /// ### bottom right corner border
               else if ((_circlePosition!.dx + (xVelocity + xBallAcceleration) >
                       leftOffset + widthRect - _circleSize) &&
                   (_circlePosition!.dy + (yVelocity + yBallAcceleration) >
-                      (topOffset + heightRect - _circleSize))) {
+                      (topOffset + widthRect - _circleSize))) {
                 print("Uhoh! BOTTOM RIGHT");
+                xVelocity = xVelocity * -cos(pi / 4);
+                yVelocity = yVelocity * -sin(pi / 4);
+                xBallAcceleration = -xBallAcceleration;
+                yBallAcceleration = -yBallAcceleration;
 
                 _circlePosition = Offset(
-                    _circlePosition!.dx + (-xVelocity + xBallAcceleration),
-                    _circlePosition!.dy + (-yVelocity + yBallAcceleration));
+                    _circlePosition!.dx + (xVelocity + xBallAcceleration),
+                    _circlePosition!.dy + (yVelocity + yBallAcceleration));
               }
 
               /// ### now to handle the cases where ball is only touching one wall
@@ -257,39 +263,63 @@ class _ballMazeDataWidgetState extends State<ballMaze> {
                   ((_circlePosition!.dx + (xVelocity + xBallAcceleration) >
                       (leftOffset + widthRect - _circleSize)))) {
                 print("Out of bounds x!");
-                xBallAcceleration = 0;
+                xForce = gravConst * sin(xInclination) * ballMass;
+                yForce = gravConst * cos(yInclination) * ballMass;
+
+                xBallAcceleration = xForce / ballMass;
+                yBallAcceleration = yForce / ballMass;
+
+                xVelocity = xVelocity + xBallAcceleration;
+                yVelocity = yVelocity + yBallAcceleration;
+                xBallAcceleration = -xBallAcceleration;
                 yBallAcceleration = 0;
                 xVelocity = xVelocity / elasticity;
-                xVelocity = xVelocity * -cos(pi / 4);
+                xVelocity = xVelocity * -cos(xInclination);
                 _circlePosition = Offset(
-                    _circlePosition!.dx + (-xVelocity + xBallAcceleration),
+                    _circlePosition!.dx + (xVelocity + xBallAcceleration),
                     _circlePosition!.dy + (yVelocity + yBallAcceleration));
               } else if ((_circlePosition!.dy +
                           (yVelocity + yBallAcceleration) <
                       topOffset) ||
                   ((_circlePosition!.dy + (yVelocity + yBallAcceleration) >
-                      (topOffset + heightRect - _circleSize)))) {
+                      (topOffset + widthRect - _circleSize)))) {
                 print("Out of bounds y!");
+                xForce = gravConst * sin(xInclination) * ballMass;
+                yForce = gravConst * cos(yInclination) * ballMass;
+
+                xBallAcceleration = xForce / ballMass;
+                yBallAcceleration = yForce / ballMass;
+
+                xVelocity = xVelocity + xBallAcceleration;
+                yVelocity = yVelocity + yBallAcceleration;
                 xBallAcceleration = 0;
-                yBallAcceleration = 0;
+                yBallAcceleration = -yBallAcceleration;
                 yVelocity = (yVelocity / elasticity);
-                yVelocity = yVelocity * -sin(pi / 4);
+                yVelocity = yVelocity * -sin(yInclination);
                 _circlePosition = Offset(
                     _circlePosition!.dx + (xVelocity + xBallAcceleration),
-                    _circlePosition!.dy + (-yVelocity + yBallAcceleration));
+                    _circlePosition!.dy + (yVelocity + yBallAcceleration));
               } else {
-                xBallAcceleration = gravConst * gyroscopeData.y;
-                yBallAcceleration = gravConst * gyroscopeData.x;
+                xForce = gravConst * sin(xInclination) * ballMass;
+                yForce = gravConst * cos(yInclination) * ballMass;
 
-                xForce = xBallAcceleration * ballMass;
-                yForce = yBallAcceleration * ballMass;
+                xBallAcceleration = xForce / ballMass;
+                yBallAcceleration = yForce / ballMass;
+
+                xVelocity = xVelocity + xBallAcceleration;
+                yVelocity = yVelocity + yBallAcceleration;
+
+                // // xForce = xBallAcceleration * ballMass;
+                // // yForce = yBallAcceleration * ballMass;
 
                 _circlePosition = Offset(
-                    _circlePosition!.dx + (xVelocity + xForce),
-                    _circlePosition!.dy + (yVelocity + yForce));
+                    _circlePosition!.dx +
+                        (xVelocity + (0.5 * xBallAcceleration)),
+                    _circlePosition!.dy +
+                        (yVelocity + (0.5 * yBallAcceleration)));
 
-                xVelocity = xVelocity + xForce;
-                yVelocity = yVelocity + yForce;
+                // xVelocity = xVelocity + xForce;
+                // yVelocity = yVelocity + yForce;
               }
             }
 
@@ -308,6 +338,10 @@ class _ballMazeDataWidgetState extends State<ballMaze> {
                         onChanged: (double value) {
                           setState(() {
                             _circleSize = value;
+                            xVelocity = 0;
+                            yVelocity = 0;
+                            xBallAcceleration = 0;
+                            yBallAcceleration = 0;
                             _circlePosition = Offset(
                                 leftOffset +
                                     ((cellLength / 2) - (_circleSize / 2)),
@@ -325,6 +359,10 @@ class _ballMazeDataWidgetState extends State<ballMaze> {
                         onChanged: (double value) {
                           setState(() {
                             ballMass = value;
+                            xVelocity = 0;
+                            yVelocity = 0;
+                            xBallAcceleration = 0;
+                            yBallAcceleration = 0;
                             _circlePosition = Offset(
                                 leftOffset +
                                     ((cellLength / 2) - (_circleSize / 2)),
@@ -342,6 +380,10 @@ class _ballMazeDataWidgetState extends State<ballMaze> {
                         onChanged: (double value) {
                           setState(() {
                             gravConst = value;
+                            xVelocity = 0;
+                            yVelocity = 0;
+                            xBallAcceleration = 0;
+                            yBallAcceleration = 0;
                             _circlePosition = Offset(
                                 leftOffset +
                                     ((cellLength / 2) - (_circleSize / 2)),
@@ -360,6 +402,10 @@ class _ballMazeDataWidgetState extends State<ballMaze> {
                         onChanged: (double value) {
                           setState(() {
                             elasticity = value;
+                            xVelocity = 0;
+                            yVelocity = 0;
+                            xBallAcceleration = 0;
+                            yBallAcceleration = 0;
                             _circlePosition = Offset(
                                 leftOffset +
                                     ((cellLength / 2) - (_circleSize / 2)),
@@ -384,14 +430,16 @@ class _ballMazeDataWidgetState extends State<ballMaze> {
                 //     top: topOffset,
                 //     left: leftOffset,
                 //     child: Container(
-                //       height: heightRect,
+                //       height: widthRect,
                 //       width: widthRect,
                 //       decoration: BoxDecoration(
                 //           shape: BoxShape.rectangle,
                 //           border: Border.all(color: Colors.blue)),
                 //     )),
                 Transform.translate(
-                    offset: Offset(_circlePosition!.dx, _circlePosition!.dy),
+                    offset: Offset(
+                        double.parse((_circlePosition!.dx).toStringAsFixed(2)),
+                        double.parse((_circlePosition!.dy).toStringAsFixed(2))),
                     child: Container(
                       decoration: BoxDecoration(
                           color: Colors.red,
@@ -423,6 +471,12 @@ class _ballMazeDataWidgetState extends State<ballMaze> {
                       Text("BallPosition:"),
                       Text("xPos: ${_circlePosition!.dx.toStringAsFixed(4)}"),
                       Text("yPos: ${_circlePosition!.dy.toStringAsFixed(4)}"),
+                    ]),
+                    Column(children: [
+                      SizedBox(height: MediaQuery.of(context).size.height / 29),
+                      Text("Angle:"),
+                      Text("X: ${(sin(xInclination)).toStringAsFixed(2)}"),
+                      Text("Y: ${(cos(yInclination)).toStringAsFixed(2)}"),
                     ])
                   ],
                 )),
