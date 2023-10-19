@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/ballMaze.dart';
 import 'package:myapp/home_page.dart';
 import 'package:myapp/maze.dart';
+import 'package:myapp/mazeimage.dart';
 import 'package:myapp/newball.dart';
 import 'package:myapp/pages/userHome.dart';
 import 'package:myapp/pages/userSearch.dart';
@@ -36,7 +37,8 @@ class _NavBarState extends State<Navbar> {
     // MazeApp()
     newBall(),
     SensorDataWidget(),
-    ballMaze()
+    ballMaze(),
+    mazeImage()
   ];
 
   @override
@@ -61,7 +63,9 @@ class _NavBarState extends State<Navbar> {
               BottomNavigationBarItem(
                   icon: Icon(Icons.question_mark_sharp), label: "test"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.circle_sharp), label: "BallMaze")
+                  icon: Icon(Icons.circle_sharp), label: "BallMaze"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.circle_sharp), label: "Maze Image"),
             ]));
   }
 }

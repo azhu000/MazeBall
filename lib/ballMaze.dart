@@ -46,7 +46,7 @@ class _ballMazeDataWidgetState extends State<ballMaze> {
   Widget build(BuildContext context) {
     Wakelock.enable();
 
-    double cellLength = sqrt((widthRect * widthRect) / 30);
+    double cellLength = sqrt((widthRect * widthRect) / 25);
 
     print(cellLength);
 
@@ -106,12 +106,12 @@ class _ballMazeDataWidgetState extends State<ballMaze> {
         cellLength,
         1.0
       ],
-      [
-        topOffset + (cellLength * 5),
-        leftOffset + (cellLength * 1),
-        1.0,
-        cellLength * 4
-      ],
+      // [
+      //   topOffset + (cellLength * 5),
+      //   leftOffset + (cellLength * 1),
+      //   1.0,
+      //   cellLength * 4
+      // ],
       [
         topOffset + (cellLength * 4),
         leftOffset + (cellLength * 0),
