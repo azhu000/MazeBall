@@ -23,6 +23,17 @@ Future<List<int>> captureWidgetToRGBAValues(GlobalKey key) async {
   }
 
   Uint8List uint8List = byteData.buffer.asUint8List();
+
+  List<List<int>> vals = [];
+
+  for (int i = 0; i < uint8List.length; i += 4) {
+    List<int> hold = [];
+    hold.add(uint8List[i]);
+    hold.add(uint8List[i + 1]);
+    hold.add(uint8List[i + 2]);
+    hold.add(uint8List[i + 3]);
+    vals.add(hold);
+  }
   return uint8List;
 }
 
@@ -50,7 +61,18 @@ Widget build(BuildContext context) {
               List<int> rgbaValues = await captureWidgetToRGBAValues(key);
               // Process the RGBA values here.
 
-              print('RGBA values: $rgbaValues');
+              List<List<int>> vals = [];
+
+              for (int i = 0; i < rgbaValues.length; i += 4) {
+                List<int> hold = [];
+                hold.add(rgbaValues[i]);
+                hold.add(rgbaValues[i + 1]);
+                hold.add(rgbaValues[i + 2]);
+                hold.add(rgbaValues[i + 3]);
+                vals.add(hold);
+              }
+
+              print('RGBA values: $vals');
             },
             child: Text('Capture Widget'),
           ),

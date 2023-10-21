@@ -9,6 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'imagescan.dart';
 
+String mazeAsset = 'assets/maze1.png';
+
 class mazeImage extends StatefulWidget {
   const mazeImage({Key? key}) : super(key: key);
   @override
@@ -101,40 +103,61 @@ class _mazeImageState extends State<mazeImage> {
   // var bitmap = loadAndConvertImage();
   // var converted = await convertBitmapTo2DArray("assets/maze1.png");
   // print(converted);
+
+  Image myimg = Image(image: AssetImage(mazeAsset));
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Widget Capture Example'),
+        title: Text('Maze Scan'),
       ),
       body: Center(
         child: Column(
           children: <Widget>[
             RepaintBoundary(
               key: key,
-              child: Container(
-                width: 200.0,
-                height: 200.0,
-                color: Colors.red,
-              ),
+              child: myimg,
             ),
             ElevatedButton(
               onPressed: () async {
                 List<int> rgbaValues = await captureWidgetToRGBAValues(key);
                 // Process the RGBA values here.
+                List<List<int>> vals = [];
 
-                print('RGBA values: $rgbaValues');
+                for (int i = 0; i < rgbaValues.length; i += 4) {
+                  List<int> hold = [];
+                  hold.add(rgbaValues[i]);
+                  hold.add(rgbaValues[i + 1]);
+                  hold.add(rgbaValues[i + 2]);
+                  hold.add(rgbaValues[i + 3]);
+                  vals.add(hold);
+                }
+
+                final ByteData mazeFile = await rootBundle.load(mazeAsset);
+                Uint8List uint8List = mazeFile.buffer.asUint8List();
+                final img.Image? mazeImage = img.decodeImage(uint8List);
+
+                late int width;
+                late int height;
+                // Get the image dimensions.
+                if (mazeImage != null) {
+                  width = mazeImage.width;
+                  height = mazeImage.height;
+                  // print('Image dimensions: $width x $height');
+                } else {
+                  print('Failed to load the image.');
+                }
+
+                for (var i in vals) {
+                  print(i);
+                }
+                print('Image dimensions: $width x $height');
               },
-              child: Text('Capture Widget'),
+              child: Text('Scan Maze'),
             ),
           ],
         ),
       ),
     );
-    // for (var pixel in context) {
-
-    // }
   }
 }
-
-// for var pixel in
