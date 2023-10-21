@@ -14,8 +14,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // File file = File("Letters.txt");
-  var logFile = File('app.log');
-  IOSink logSink = logFile.openWrite(mode: FileMode.append);
+  // var logFile = File('app.log');
+  // IOSink logSink = logFile.openWrite(mode: FileMode.append);
 
   final ByteData mazeFile = await rootBundle.load('assets/maze1.png');
   Uint8List uint8List = mazeFile.buffer.asUint8List();
@@ -48,7 +48,27 @@ void main() async {
     }
   }
 
-  debugPrint(pixelvals.toString());
+  // int rows = pixelvals.length;
+  // int cols = pixelvals[0].length;
+
+  // for (int y = 0; y < rows; y++) {
+  //   for (int x = 0; x < cols; x++) {
+  //     Color pixel = pixelvals[y][x];
+  //     bool isBlack = pixel.value == Color(0xFF000000).value;
+
+  //     double screenX = x.toDouble(); // Map to screen X-coordinate.
+  //     double screenY = y.toDouble(); // Map to screen Y-coordinate.
+
+  //     int value = isBlack ? 1 : 0; // Assign 1 for black, 0 for white.
+
+  //     print('Pixel at ($x, $y) - Color: ${isBlack ? 'Black' : 'White'}, '
+  //         'Screen Coordinates: ($screenX, $screenY), Value: $value');
+  //   }
+  // }
+
+  // for (var i in pixelvals) {
+  //   debugPrint(i.toString());
+  // }
 
   print(pixelvals.length);
 
@@ -56,7 +76,6 @@ void main() async {
   String placeholder;
 
   for (int i = 0; i < mazeImage!.height; i++) {
-    placeholder = '';
     for (int j = 0; j < mazeImage.width; j++) {
       if (pixelvals[(i + 1) * (j + 1)][0] == 0) {
         placeholder = "Black";
@@ -67,17 +86,20 @@ void main() async {
       }
     }
   }
-  print(values);
+  // for (var i in values) {
+  //   debugPrint(i);
+  // }
+  // print(values);
 
-  Process.run('chmod', ['755', 'app.log']).then((ProcessResult result) {
-    if (result.exitCode == 0) {
-      print('File permissions changed successfully.');
-    } else {
-      print('Failed to change file permissions: ${result.stderr}');
-    }
-  });
+  // Process.run('chmod', ['755', 'app.log']).then((ProcessResult result) {
+  //   if (result.exitCode == 0) {
+  //     print('File permissions changed successfully.');
+  //   } else {
+  //     print('Failed to change file permissions: ${result.stderr}');
+  //   }
+  // });
 
-  writeLogToFile(values.toString(), 'assets/app.log');
+  // writeLogToFile(values.toString(), 'assets/app.log');
   await Firebase.initializeApp();
   runApp(const MyApp());
 }

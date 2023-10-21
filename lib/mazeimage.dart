@@ -7,6 +7,7 @@ import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'imagescan.dart';
 
 class mazeImage extends StatefulWidget {
   const mazeImage({Key? key}) : super(key: key);
@@ -102,8 +103,33 @@ class _mazeImageState extends State<mazeImage> {
   // print(converted);
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      "assets/maze1.png",
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Widget Capture Example'),
+      ),
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            RepaintBoundary(
+              key: key,
+              child: Container(
+                width: 200.0,
+                height: 200.0,
+                color: Colors.red,
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                List<int> rgbaValues = await captureWidgetToRGBAValues(key);
+                // Process the RGBA values here.
+
+                print('RGBA values: $rgbaValues');
+              },
+              child: Text('Capture Widget'),
+            ),
+          ],
+        ),
+      ),
     );
     // for (var pixel in context) {
 
