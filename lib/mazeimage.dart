@@ -86,6 +86,44 @@ Future<List<List<int>>?> convertBitmapTo2DArray(String imagePath) async {
   return result;
 }
 
+Future<List<List<int>>> convertPixels(
+    List<List<int>> pixelsInfo, int height, int width) async {
+  List<int> pixels2d = [];
+  for (int i = 0; i < pixelsInfo.length; i++) {
+    if ((pixelsInfo[i][0] == 0) &&
+        (pixelsInfo[i][1] == 0) &&
+        (pixelsInfo[i][2] == 0)) {
+      pixels2d.add(1);
+    } else {
+      pixels2d.add(0);
+    }
+  }
+  List<List<int>> pixels2dData = [];
+  for (int y = 0; y < height; y++) {
+    List<int> rows = pixels2d.sublist((y * width), (y * width) + width);
+    pixels2dData.add(rows);
+  }
+
+  return pixels2dData;
+}
+
+Future<Map<String, int>?> mapPixel(
+    List<List<int>> pixelData, int height, int width) async {
+  if (pixelData == null) {
+    return null;
+  }
+  Map<String, int> pixelMap = {};
+
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      int pixel = pixelData[y][x];
+      String coordinate = '$y,$x'; // acts as our coordinate for the map
+      pixelMap[coordinate] = pixel;
+    }
+  }
+  return pixelMap;
+}
+
 // void main() async {
 //   WidgetsFlutterBinding.ensureInitialized();
 
@@ -148,9 +186,20 @@ class _mazeImageState extends State<mazeImage> {
                   print('Failed to load the image.');
                 }
 
-                for (var i in vals) {
-                  print(i);
-                }
+                // for (var i in vals) {
+                //   //prints out all the pixels
+                //   print(i);
+                // }
+
+                final convert = await convertPixels(vals, height, width);
+
+                final mappedPixels = await mapPixel(convert, height, width);
+
+                // print(convert);
+                // print(mappedPixels);
+                print(mappedPixels?['0,8']);
+
+                // print(vals);
                 print('Image dimensions: $width x $height');
               },
               child: Text('Scan Maze'),
