@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'imagescan.dart';
 
-String mazeAsset = 'assets/maze1.png';
+String mazeAsset = 'assets/maze6.png';
 
 class mazeImage extends StatefulWidget {
   const mazeImage({Key? key}) : super(key: key);
@@ -18,6 +18,7 @@ class mazeImage extends StatefulWidget {
 }
 
 Future<ui.Image> loadAssetImage(String imagePath) async {
+  //loads the asset image and returns the image as a frame
   final data = await rootBundle.load(imagePath);
   final codec = await ui
       .instantiateImageCodec(Uint8List.sublistView(data.buffer.asUint8List()));
@@ -130,8 +131,8 @@ Future<Map<String, int>?> mapPixel(List<List<int>> pixelData, int height,
 class _mazeImageState extends State<mazeImage> {
   Image myimg = Image(image: AssetImage(mazeAsset));
   double imgTop = 100;
-  double imgLeft =
-      MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width / 2;
+  double imgLeft = 5;
+  // MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width / 2;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -183,7 +184,8 @@ class _mazeImageState extends State<mazeImage> {
 
               // print(convert);
               print(mappedPixels);
-              print(mappedPixels?['0,8']);
+              print(mappedPixels?[
+                  '10,160']); // remember is y,x not x,y (row, col) y = row, x = col
 
               // print(vals);
               print('Image dimensions: $width x $height');
