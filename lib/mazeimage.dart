@@ -107,8 +107,8 @@ Future<List<List<int>>> convertPixels(
   return pixels2dData;
 }
 
-Future<Map<String, int>?> mapPixel(
-    List<List<int>> pixelData, int height, int width) async {
+Future<Map<String, int>?> mapPixel(List<List<int>> pixelData, int height,
+    int width, double initialX, double initialY) async {
   if (pixelData == null) {
     return null;
   }
@@ -117,96 +117,81 @@ Future<Map<String, int>?> mapPixel(
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
       int pixel = pixelData[y][x];
-      String coordinate = '$y,$x'; // acts as our coordinate for the map
+      int offsetY = (initialY + y).toInt();
+      int offsetX = (initialX + x).toInt();
+      String coordinate =
+          '$offsetY,$offsetX'; // acts as our coordinate for the map
       pixelMap[coordinate] = pixel;
     }
   }
   return pixelMap;
 }
 
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-
-//   final imagePath =
-//       'assets/your_image.png'; // Replace with your image asset path
-//   final pixelArray = await convertBitmapTo2DArray(imagePath);
-
-//   if (pixelArray != null) {
-//     // You now have a 2D array of pixel values.
-//     print(pixelArray);
-//   }
-// }
-
 class _mazeImageState extends State<mazeImage> {
-  // var bitmap = loadAndConvertImage();
-  // var converted = await convertBitmapTo2DArray("assets/maze1.png");
-  // print(converted);
-
   Image myimg = Image(image: AssetImage(mazeAsset));
+  double imgTop = 100;
+  double imgLeft =
+      MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width / 2;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Maze Scan'),
-      ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            RepaintBoundary(
-              key: key,
-              child: myimg,
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                List<int> rgbaValues = await captureWidgetToRGBAValues(key);
-                // Process the RGBA values here.
-                List<List<int>> vals = [];
-
-                for (int i = 0; i < rgbaValues.length; i += 4) {
-                  List<int> hold = [];
-                  hold.add(rgbaValues[i]);
-                  hold.add(rgbaValues[i + 1]);
-                  hold.add(rgbaValues[i + 2]);
-                  hold.add(rgbaValues[i + 3]);
-                  vals.add(hold);
-                }
-
-                final ByteData mazeFile = await rootBundle.load(mazeAsset);
-                Uint8List uint8List = mazeFile.buffer.asUint8List();
-                final img.Image? mazeImage = img.decodeImage(uint8List);
-
-                late int width;
-                late int height;
-                // Get the image dimensions.
-                if (mazeImage != null) {
-                  width = mazeImage.width;
-                  height = mazeImage.height;
-                  // print('Image dimensions: $width x $height');
-                } else {
-                  print('Failed to load the image.');
-                }
-
-                // for (var i in vals) {
-                //   //prints out all the pixels
-                //   print(i);
-                // }
-
-                final convert = await convertPixels(vals, height, width);
-
-                final mappedPixels = await mapPixel(convert, height, width);
-
-                // print(convert);
-                // print(mappedPixels);
-                print(mappedPixels?['0,8']);
-
-                // print(vals);
-                print('Image dimensions: $width x $height');
-              },
-              child: Text('Scan Maze'),
-            ),
-          ],
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          top: imgTop,
+          left: imgLeft,
+          child: RepaintBoundary(
+            key: key,
+            child: myimg,
+          ),
         ),
-      ),
+        Positioned(
+          top: imgTop - 50,
+          left: imgLeft,
+          child: ElevatedButton(
+            onPressed: () async {
+              List<int> rgbaValues = await captureWidgetToRGBAValues(key);
+              // Process the RGBA values here.
+              List<List<int>> vals = [];
+
+              for (int i = 0; i < rgbaValues.length; i += 4) {
+                List<int> hold = [];
+                hold.add(rgbaValues[i]);
+                hold.add(rgbaValues[i + 1]);
+                hold.add(rgbaValues[i + 2]);
+                hold.add(rgbaValues[i + 3]);
+                vals.add(hold);
+              }
+
+              final ByteData mazeFile = await rootBundle.load(mazeAsset);
+              Uint8List uint8List = mazeFile.buffer.asUint8List();
+              final img.Image? mazeImage = img.decodeImage(uint8List);
+
+              late int width;
+              late int height;
+              // Get the image dimensions.
+              if (mazeImage != null) {
+                width = mazeImage.width;
+                height = mazeImage.height;
+              } else {
+                print('Failed to load the image.');
+              }
+
+              final convert = await convertPixels(vals, height, width);
+
+              final mappedPixels =
+                  await mapPixel(convert, height, width, imgTop, imgLeft);
+
+              // print(convert);
+              print(mappedPixels);
+              print(mappedPixels?['0,8']);
+
+              // print(vals);
+              print('Image dimensions: $width x $height');
+            },
+            child: Text('Scan Maze'),
+          ),
+        )
+      ],
     );
   }
 }
