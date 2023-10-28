@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:wakelock/wakelock.dart';
 import 'package:image/image.dart' as img;
-import 'dart:typed_data';
-import 'dart:io';
 import 'dart:async';
-import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'imagescan.dart';
-
-String mazeAsset = 'assets/maze6.png';
+import 'conversions.dart';
+import 'dart:math';
 
 class mazeImage extends StatefulWidget {
   const mazeImage({Key? key}) : super(key: key);
@@ -17,183 +13,141 @@ class mazeImage extends StatefulWidget {
   _mazeImageState createState() => _mazeImageState();
 }
 
-Future<ui.Image> loadAssetImage(String imagePath) async {
-  //loads the asset image and returns the image as a frame
-  final data = await rootBundle.load(imagePath);
-  final codec = await ui
-      .instantiateImageCodec(Uint8List.sublistView(data.buffer.asUint8List()));
-  final frame = await codec.getNextFrame();
-  return frame.image;
-}
-
-Future<ui.Image> convertImageToBitmap(String imagePath) async {
-  final image = await loadAssetImage(imagePath);
-
-  final recorder = ui.PictureRecorder();
-  final canvas = Canvas(recorder);
-  final paint = Paint()
-    ..color = Colors
-        .transparent; // You can specify a background color here if needed.
-
-  canvas.drawImage(image, Offset.zero, paint);
-
-  final picture = recorder.endRecording();
-  final img = await picture.toImage(image.width, image.height);
-  return img;
-}
-
-Future<void> loadAndConvertImage() async {
-  final imagePath = "assets/maze1.png"; // Replace with your image asset path
-  final bitmapImage = await convertImageToBitmap(imagePath);
-
-  // Now you have the image in bitmap format, and you can use it as needed.
-}
-
-Future<List<List<int>>?> convertBitmapTo2DArray(String imagePath) async {
-  final image = await convertImageToBitmap(imagePath);
-  final width = image.width;
-  final height = image.height;
-
-  final ByteData? byteData =
-      await image.toByteData(format: ui.ImageByteFormat.rawRgba);
-
-  if (byteData == null) {
-    return null;
-  }
-
-  final buffer = byteData.buffer.asUint8List();
-
-  if (buffer.length != (width * height * 4)) {
-    return null; // Ensure the buffer size matches the image dimensions and RGBA format.
-  }
-
-  final List<List<int>> result = [];
-
-  for (int y = 0; y < height; y++) {
-    final List<int> row = [];
-    for (int x = 0; x < width; x++) {
-      final int index = (y * width + x) * 4;
-      final int alpha = buffer[index];
-      final int red = buffer[index + 1];
-      final int green = buffer[index + 2];
-      final int blue = buffer[index + 3];
-      // You can convert the RGBA values to a single integer if needed.
-      final pixelValue = (alpha << 24) | (red << 16) | (green << 8) | blue;
-      row.add(pixelValue);
-    }
-    result.add(row);
-  }
-
-  return result;
-}
-
-Future<List<List<int>>> convertPixels(
-    List<List<int>> pixelsInfo, int height, int width) async {
-  List<int> pixels2d = [];
-  for (int i = 0; i < pixelsInfo.length; i++) {
-    if ((pixelsInfo[i][0] == 0) &&
-        (pixelsInfo[i][1] == 0) &&
-        (pixelsInfo[i][2] == 0)) {
-      pixels2d.add(1);
-    } else {
-      pixels2d.add(0);
-    }
-  }
-  List<List<int>> pixels2dData = [];
-  for (int y = 0; y < height; y++) {
-    List<int> rows = pixels2d.sublist((y * width), (y * width) + width);
-    pixels2dData.add(rows);
-  }
-
-  return pixels2dData;
-}
-
-Future<Map<String, int>?> mapPixel(List<List<int>> pixelData, int height,
-    int width, double initialX, double initialY) async {
-  if (pixelData == null) {
-    return null;
-  }
-  Map<String, int> pixelMap = {};
-
-  for (int y = 0; y < height; y++) {
-    for (int x = 0; x < width; x++) {
-      int pixel = pixelData[y][x];
-      int offsetY = (initialY + y).toInt();
-      int offsetX = (initialX + x).toInt();
-      String coordinate =
-          '$offsetY,$offsetX'; // acts as our coordinate for the map
-      pixelMap[coordinate] = pixel;
-    }
-  }
-  return pixelMap;
-}
-
 class _mazeImageState extends State<mazeImage> {
   Image myimg = Image(image: AssetImage(mazeAsset));
+  int? width = Image(image: AssetImage(mazeAsset)).width?.toInt();
+  int? height = Image(image: AssetImage(mazeAsset)).height?.toInt();
+
   double imgTop = 100;
-  double imgLeft = 5;
+  double imgLeft = 4;
   // MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width / 2;
+
+  double _circleSize = 1;
+  Offset _circlePosition = Offset(100 + 20, 4 + 400 / 2);
+  // Offset? prev_pos;
+
+  double ballMass = 0.1;
+  double gravConst = 0.3;
+  double xVelocity = 0.0; // the x velocity component
+  double yVelocity = 0.0; // the y velocity component
+  double xBallAcceleration = 0.0;
+  double yBallAcceleration = 0.0;
+  double xForce =
+      0.0; // this is for when i decide to factor in mass into the equationx
+  double yForce = 0.0;
+  double elasticity = // honestly a bad name will change eventually
+      1.5;
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Positioned(
-          top: imgTop,
-          left: imgLeft,
-          child: RepaintBoundary(
-            key: key,
-            child: myimg,
-          ),
-        ),
-        Positioned(
-          top: imgTop - 50,
-          left: imgLeft,
-          child: ElevatedButton(
-            onPressed: () async {
-              List<int> rgbaValues = await captureWidgetToRGBAValues(key);
-              // Process the RGBA values here.
-              List<List<int>> vals = [];
+    return StreamBuilder<AccelerometerEvent>(
+        stream: accelerometerEvents,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator(); // Loading indicator if no data
+          }
 
-              for (int i = 0; i < rgbaValues.length; i += 4) {
-                List<int> hold = [];
-                hold.add(rgbaValues[i]);
-                hold.add(rgbaValues[i + 1]);
-                hold.add(rgbaValues[i + 2]);
-                hold.add(rgbaValues[i + 3]);
-                vals.add(hold);
-              }
+          final accelerometerData = snapshot.data!;
+          // print(mappedPixels);
 
-              final ByteData mazeFile = await rootBundle.load(mazeAsset);
-              Uint8List uint8List = mazeFile.buffer.asUint8List();
-              final img.Image? mazeImage = img.decodeImage(uint8List);
+          double x = accelerometerData.x,
+              y = accelerometerData.y,
+              z = accelerometerData.z;
+          double norm_Of_g = sqrt(accelerometerData.x * accelerometerData.x +
+              accelerometerData.y * accelerometerData.y +
+              accelerometerData.z * accelerometerData.z);
+          x = accelerometerData.x / norm_Of_g;
+          y = accelerometerData.y / norm_Of_g;
+          z = accelerometerData.z / norm_Of_g;
 
-              late int width;
-              late int height;
-              // Get the image dimensions.
-              if (mazeImage != null) {
-                width = mazeImage.width;
-                height = mazeImage.height;
-              } else {
-                print('Failed to load the image.');
-              }
+          double xInclination = -(asin(x));
+          double yInclination = (acos(y));
+          double zInclination = (atan(z));
 
-              final convert = await convertPixels(vals, height, width);
+          if (snapshot.hasData) {
+            print(mappedPixels[
+                '10,160']); // remember is y,x not x,y (row, col) y = row, x = col
+            xForce = gravConst * sin(xInclination) * ballMass;
+            yForce = gravConst * cos(yInclination) * ballMass;
 
-              final mappedPixels =
-                  await mapPixel(convert, height, width, imgTop, imgLeft);
+            xBallAcceleration = xForce / ballMass;
+            yBallAcceleration = yForce / ballMass;
 
-              // print(convert);
-              print(mappedPixels);
-              print(mappedPixels?[
-                  '10,160']); // remember is y,x not x,y (row, col) y = row, x = col
+            xVelocity = xVelocity + xBallAcceleration;
+            yVelocity = yVelocity + yBallAcceleration;
 
-              // print(vals);
-              print('Image dimensions: $width x $height');
-            },
-            child: Text('Scan Maze'),
-          ),
-        )
-      ],
-    );
+            xForce = xBallAcceleration * ballMass;
+            yForce = yBallAcceleration * ballMass;
+
+            _circlePosition = Offset(
+                _circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)),
+                _circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)));
+          }
+
+          return Stack(
+            children: <Widget>[
+              Positioned(
+                top: imgTop,
+                left: imgLeft,
+                child: RepaintBoundary(
+                  key: key,
+                  child: myimg,
+                ),
+              ),
+              Positioned(
+                  left: 0,
+                  top: 0,
+                  child: Transform.translate(
+                      offset: Offset(
+                          double.parse(_circlePosition!.dx.toInt().toString()),
+                          double.parse(_circlePosition!.dy.toInt().toString())),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.black)),
+                        height: 5,
+                        width: 5,
+                      ))),
+              Positioned(
+                top: imgTop - 50,
+                left: imgLeft,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    List<int> rgbaValues = await captureWidgetToRGBAValues(key);
+                    // Process the RGBA values here.
+                    List<List<int>> vals = await rgbaArray(rgbaValues);
+
+                    List<int> imageDimensions = await getDimensions(mazeAsset);
+
+                    final convert = await convertPixels(
+                        vals, imageDimensions[1], imageDimensions[0]);
+
+                    final mappedPixels = await mapPixel(
+                        convert,
+                        imageDimensions[1],
+                        imageDimensions[0],
+                        imgTop,
+                        imgLeft);
+
+                    // print(vals.length);
+                    // print(convert);
+                    // print(mappedPixels);
+                    // print(mappedPixels[
+                    //     '10,160']); // remember is y,x not x,y (row, col) y = row, x = col
+
+                    // print(mappedPixels
+                    //     .length); // validated, the number of key,value pairs in mappedPixels is equal to WxH of the image.
+
+                    print(
+                        'Image dimensions: ${imageDimensions[0]} x ${imageDimensions[1]}, # pixels equals ${imageDimensions[0] * imageDimensions[1]}');
+                  },
+                  child: Text('Scan Maze'),
+                ),
+              ),
+              // AccelerometerStream(),
+            ],
+          );
+        });
   }
 }
