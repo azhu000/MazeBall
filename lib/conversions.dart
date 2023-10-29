@@ -32,12 +32,12 @@ Future<ui.Image> convertImageToBitmap(String imagePath) async {
   return img;
 }
 
-Future<void> loadAndConvertImage() async {
-  const imagePath = "assets/maze1.png"; // Replace with your image asset path
-  final bitmapImage = await convertImageToBitmap(imagePath);
+// Future<void> loadAndConvertImage() async {
+//   const imagePath = "assets/maze1.png"; // Replace with your image asset path
+//   final bitmapImage = await convertImageToBitmap(imagePath);
 
-  // Now you have the image in bitmap format, and you can use it as needed.
-}
+//   // Now you have the image in bitmap format, and you can use it as needed.
+// }
 
 Future<List<List<int>>?> convertBitmapTo2DArray(String imagePath) async {
   final image = await convertImageToBitmap(imagePath);
@@ -101,7 +101,7 @@ Future<List<List<int>>> convertPixels(
 Future<Map<String, int>> mapPixel(List<List<int>> pixelData, int height,
     int width, double initialX, double initialY) async {
   // Map<String, int> pixelMap = {};
-  await Future.delayed(Duration(seconds: 10));
+  await Future.delayed(const Duration(seconds: 1));
 
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {

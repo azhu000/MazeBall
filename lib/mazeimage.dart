@@ -65,8 +65,9 @@ class _mazeImageState extends State<mazeImage> {
           double zInclination = (atan(z));
 
           if (snapshot.hasData) {
-            print(mappedPixels[
-                '10,160']); // remember is y,x not x,y (row, col) y = row, x = col
+            // print(mappedPixels[
+            //     '${imgLeft.toInt() + 561},${imgTop.toInt() + 401}']); // remember is y,x not x,y (row, col) y = row, x = col
+            // print('${imgLeft.toInt() + 561},${imgTop.toInt() + 401}');
             xForce = gravConst * sin(xInclination) * ballMass;
             yForce = gravConst * cos(yInclination) * ballMass;
 
@@ -133,6 +134,17 @@ class _mazeImageState extends State<mazeImage> {
                     // print(vals.length);
                     // print(convert);
                     // print(mappedPixels);
+                    // for (int i = imgLeft.toInt(); i < imageDimensions[1]; i++) {
+                    //   for (int j = imgTop.toInt();
+                    //       j < imageDimensions[0];
+                    //       j++) {
+                    //     print('$i, $j: ${mappedPixels['$i,$j']}');
+                    //     if (mappedPixels['$i,$j'] == null) {
+                    //       print("Found null at $i, $j");
+                    //       break;
+                    //     }
+                    //   }
+                    // }
                     // print(mappedPixels[
                     //     '10,160']); // remember is y,x not x,y (row, col) y = row, x = col
 
@@ -145,7 +157,31 @@ class _mazeImageState extends State<mazeImage> {
                   child: Text('Scan Maze'),
                 ),
               ),
-              // AccelerometerStream(),
+              Center(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(children: [
+                    SizedBox(height: MediaQuery.of(context).size.height / 1.25),
+                    Text("AccelData:"),
+                    Text("X: ${accelerometerData.x.toStringAsFixed(4)}"),
+                    Text("Y: ${accelerometerData.y.toStringAsFixed(4)}"),
+                    Text("Z: ${accelerometerData.z.toStringAsFixed(4)}"),
+                  ]),
+                  Column(children: [
+                    SizedBox(height: MediaQuery.of(context).size.height / 1.25),
+                    Text("BallPosition:"),
+                    Text("xPos: ${_circlePosition!.dx.toStringAsFixed(4)}"),
+                    Text("yPos: ${_circlePosition!.dy.toStringAsFixed(4)}"),
+                  ]),
+                  Column(children: [
+                    SizedBox(height: MediaQuery.of(context).size.height / 1.25),
+                    Text("Angle:"),
+                    Text("X: ${(sin(xInclination)).toStringAsFixed(2)}"),
+                    Text("Y: ${(cos(yInclination)).toStringAsFixed(2)}"),
+                  ])
+                ],
+              )),
             ],
           );
         });
