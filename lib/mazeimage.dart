@@ -78,24 +78,34 @@ class _mazeImageState extends State<mazeImage> {
             yVelocity = yVelocity + yBallAcceleration;
 
             //example current ball position is (130,103)
-            print(intersectsWall(_circlePosition.dx.toInt(),
-                _circlePosition.dy.toInt(), 190, 103, mappedPixels));
-            print(_circlePosition.dx.toString() +
-                "," +
-                _circlePosition.dy.toString());
-            print(whereIntersect(
+            // print(intersectsWall(_circlePosition.dx.toInt(),
+            //     _circlePosition.dy.toInt(), 190, 103, mappedPixels));
+            // print(_circlePosition.dx.toString() +
+            //     "," +
+            //     _circlePosition.dy.toString());
+            // print(whereIntersect(
+            //     _circlePosition.dx.toInt(),
+            //     _circlePosition.dy.toInt(),
+            //     190,
+            //     103,
+            //     mappedPixels,
+            //     _circleSize.toInt()));
+
+            // // _circlePosition = Offset(192.0, 100.0);
+            // _circlePosition = Offset(163.0, 103.0);
+
+            _circlePosition = whereIntersect(
                 _circlePosition.dx.toInt(),
                 _circlePosition.dy.toInt(),
-                190,
-                103,
+                (_circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)))
+                    .toInt(),
+                (_circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)))
+                    .toInt(),
                 mappedPixels,
-                _circleSize.toInt()));
+                _circleSize.toInt());
 
-            // _circlePosition = Offset(192.0, 100.0);
-            _circlePosition = Offset(163.0, 103.0);
-
-            // _circlePosition = whereIntersect(_circlePosition.dx.toInt(),
-            //     _circlePosition.dy.toInt(), 190, 110, mappedPixels);
+            print(xVelocity);
+            print(yVelocity);
 
             // xForce = xBallAcceleration * ballMass;
             // yForce = yBallAcceleration * ballMass;
