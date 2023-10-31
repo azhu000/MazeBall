@@ -23,7 +23,7 @@ class _mazeImageState extends State<mazeImage> {
   // MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width / 2;
 
   double _circleSize = 1;
-  Offset _circlePosition = Offset(100 + 20, 4 + 400 / 2);
+  Offset _circlePosition = Offset(200, 50); // second one is row first is col
   // Offset? prev_pos;
 
   double ballMass = 0.1;
@@ -77,12 +77,78 @@ class _mazeImageState extends State<mazeImage> {
             xVelocity = xVelocity + xBallAcceleration;
             yVelocity = yVelocity + yBallAcceleration;
 
-            xForce = xBallAcceleration * ballMass;
-            yForce = yBallAcceleration * ballMass;
+            print(intersectsWall(_circlePosition.dx.toInt(),
+                _circlePosition.dy.toInt(), 190, 110, mappedPixels));
+            print(_circlePosition.dx.toString() +
+                "," +
+                _circlePosition.dy.toString());
+            print(whereIntersect(
+                _circlePosition.dx.toInt(),
+                _circlePosition.dy.toInt(),
+                190,
+                110,
+                mappedPixels,
+                _circleSize.toInt()));
 
-            _circlePosition = Offset(
-                _circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)),
-                _circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)));
+            // _circlePosition = Offset(192.0, 100.0);
+
+            // _circlePosition = whereIntersect(_circlePosition.dx.toInt(),
+            //     _circlePosition.dy.toInt(), 190, 110, mappedPixels);
+
+            // xForce = xBallAcceleration * ballMass;
+            // yForce = yBallAcceleration * ballMass;
+
+            // _circlePosition = intersectsWall(
+            //     _circlePosition.dx.toInt(),
+            //     _circlePosition.dy.toInt(),
+            //     (_circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)))
+            //         .toInt(),
+            //     (_circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)))
+            //         .toInt(),
+            //     mappedPixels,
+            //     _circlePosition);
+
+            // if (intersectsWall(
+            //   _circlePosition.dx.toInt(),
+            //   _circlePosition.dy.toInt(),
+            //   (_circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)))
+            //       .toInt(),
+            //   (_circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)))
+            //       .toInt(),
+            //   mappedPixels,
+            // )) {
+            //   // xBallAcceleration = 0;
+            //   // yBallAcceleration = 0;
+            //   // xVelocity = xVelocity * -cos(xInclination);
+            //   // yVelocity = yVelocity * -sin(yInclination);
+            //   _circlePosition = whereIntersect(
+            //     _circlePosition.dx.toInt(),
+            //     _circlePosition.dy.toInt(),
+            //     (_circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)))
+            //         .toInt(),
+            //     (_circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)))
+            //         .toInt(),
+            //     mappedPixels,
+            //   );
+            // }
+
+            // print(intersectsWall(
+            //             _circlePosition.dx.toInt(),
+            //             _circlePosition.dy.toInt(),
+            //             (_circlePosition!.dx +
+            //                     (xVelocity + (0.5 * xBallAcceleration)))
+            //                 .toInt(),
+            //             (_circlePosition!.dy +
+            //                     (yVelocity + (0.5 * yBallAcceleration)))
+            //                 .toInt(),
+            //             mappedPixels,
+            //             _circlePosition)
+            //         .toString() +
+            //     _circlePosition.toString());
+
+            // _circlePosition = Offset(
+            //     _circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)),
+            //     _circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)));
           }
 
           return Stack(
@@ -107,8 +173,8 @@ class _mazeImageState extends State<mazeImage> {
                             color: Colors.red,
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.black)),
-                        height: 5,
-                        width: 5,
+                        height: 1,
+                        width: 1,
                       ))),
               Positioned(
                 top: imgTop - 50,
@@ -150,7 +216,7 @@ class _mazeImageState extends State<mazeImage> {
 
                     // print(mappedPixels
                     //     .length); // validated, the number of key,value pairs in mappedPixels is equal to WxH of the image.
-
+                    _circlePosition = Offset(200, 50);
                     print(
                         'Image dimensions: ${imageDimensions[0]} x ${imageDimensions[1]}, # pixels equals ${imageDimensions[0] * imageDimensions[1]}');
                   },
@@ -171,8 +237,8 @@ class _mazeImageState extends State<mazeImage> {
                   Column(children: [
                     SizedBox(height: MediaQuery.of(context).size.height / 1.25),
                     Text("BallPosition:"),
-                    Text("xPos: ${_circlePosition!.dx.toStringAsFixed(4)}"),
-                    Text("yPos: ${_circlePosition!.dy.toStringAsFixed(4)}"),
+                    Text("xPos: ${_circlePosition!.dx.toInt().toString()}"),
+                    Text("yPos: ${_circlePosition!.dy.toInt().toString()}"),
                   ]),
                   Column(children: [
                     SizedBox(height: MediaQuery.of(context).size.height / 1.25),

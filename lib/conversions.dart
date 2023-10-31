@@ -156,3 +156,69 @@ Future<List<int>> getDimensions(String filepathImage) async {
 
   return [width, height];
 }
+
+bool intersectsWall(int x1, int y1, int x2, int y2, Map<String, int> borders) {
+  if (borders == null) {
+    return false;
+  }
+  int dx = (x2 - x1).abs();
+  int dy = (y2 - y1).abs();
+  int sx = x1 < x2 ? 1 : -1;
+  int sy = y1 < y2 ? 1 : -1;
+
+  int err = dx - dy;
+
+  while (x1 != x2 || y1 != y2) {
+    if (borders['${x1.toInt()},${y1.toInt()}'] == 1) {
+      // ballPos = Offset(x1.toDouble(), y1.toDouble());
+      // print(ballPos);
+      return true; // The line intersects the pixel.
+    }
+
+    int err2 = 2 * err;
+    if (err2 > -dy) {
+      err -= dy;
+      x1 += sx;
+    }
+    if (err2 < dx) {
+      err += dx;
+      y1 += sy;
+    }
+  }
+
+  return false; // The line does not intersect the pixel.
+}
+
+Offset whereIntersect(int x1, int y1, int x2, int y2, Map<String, int> borders,
+    int circleDiameter) {
+  int dx = (x2 - x1).abs();
+  int dy = (y2 - y1).abs();
+  int sx = x1 < x2 ? 1 : -1;
+  int sy = y1 < y2 ? 1 : -1;
+
+  int err = dx - dy;
+
+  while (x1 != x2 || y1 != y2) {
+    if (borders['${x1.toInt()},${y1.toInt()}'] == 1) {
+      // ballPos = Offset(x1.toDouble(), y1.toDouble());
+      // print(borders['${y1.toInt()},${x1.toInt()}'].toString());
+      // print(Offset(y1.toDouble(), x1.toDouble()));
+
+      return Offset(
+          x1.toDouble(), y1.toDouble()); // The line intersects the pixel.
+    }
+
+    int err2 = 2 * err;
+    if (err2 > -dy) {
+      err -= dy;
+      x1 += sx;
+    }
+    if (err2 < dx) {
+      err += dx;
+      y1 += sy;
+    }
+  }
+
+  return Offset(
+      x2.toDouble(), y2.toDouble()); // The line does not intersect the pixel.
+}
