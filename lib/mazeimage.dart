@@ -23,7 +23,7 @@ class _mazeImageState extends State<mazeImage> {
   // MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width / 2;
 
   double _circleSize = 1;
-  Offset _circlePosition = Offset(200, 50); // second one is row first is col
+  Offset _circlePosition = Offset(130, 103); // second one is row first is col
   // Offset? prev_pos;
 
   double ballMass = 0.1;
@@ -77,8 +77,9 @@ class _mazeImageState extends State<mazeImage> {
             xVelocity = xVelocity + xBallAcceleration;
             yVelocity = yVelocity + yBallAcceleration;
 
+            //example current ball position is (130,103)
             print(intersectsWall(_circlePosition.dx.toInt(),
-                _circlePosition.dy.toInt(), 190, 110, mappedPixels));
+                _circlePosition.dy.toInt(), 190, 103, mappedPixels));
             print(_circlePosition.dx.toString() +
                 "," +
                 _circlePosition.dy.toString());
@@ -86,11 +87,12 @@ class _mazeImageState extends State<mazeImage> {
                 _circlePosition.dx.toInt(),
                 _circlePosition.dy.toInt(),
                 190,
-                110,
+                103,
                 mappedPixels,
                 _circleSize.toInt()));
 
             // _circlePosition = Offset(192.0, 100.0);
+            _circlePosition = Offset(163.0, 103.0);
 
             // _circlePosition = whereIntersect(_circlePosition.dx.toInt(),
             //     _circlePosition.dy.toInt(), 190, 110, mappedPixels);
@@ -216,7 +218,7 @@ class _mazeImageState extends State<mazeImage> {
 
                     // print(mappedPixels
                     //     .length); // validated, the number of key,value pairs in mappedPixels is equal to WxH of the image.
-                    _circlePosition = Offset(200, 50);
+                    _circlePosition = Offset(130, 103);
                     print(
                         'Image dimensions: ${imageDimensions[0]} x ${imageDimensions[1]}, # pixels equals ${imageDimensions[0] * imageDimensions[1]}');
                   },

@@ -193,10 +193,14 @@ Offset whereIntersect(int x1, int y1, int x2, int y2, Map<String, int> borders,
     int circleDiameter) {
   int dx = (x2 - x1).abs();
   int dy = (y2 - y1).abs();
-  int sx = x1 < x2 ? 1 : -1;
+  int sx =
+      x1 < x2 ? 1 : -1; //tells us what direction we're performing the transform
   int sy = y1 < y2 ? 1 : -1;
 
   int err = dx - dy;
+
+  int prevX1 = x1;
+  int prevY1 = y1;
 
   while (x1 != x2 || y1 != y2) {
     if (borders['${x1.toInt()},${y1.toInt()}'] == 1) {
@@ -204,10 +208,11 @@ Offset whereIntersect(int x1, int y1, int x2, int y2, Map<String, int> borders,
       // print(borders['${y1.toInt()},${x1.toInt()}'].toString());
       // print(Offset(y1.toDouble(), x1.toDouble()));
 
-      return Offset(
-          x1.toDouble(), y1.toDouble()); // The line intersects the pixel.
+      return Offset(prevX1.toDouble(),
+          prevY1.toDouble()); // The line intersects the pixel.
     }
-
+    prevX1 = x1;
+    prevY1 = y1;
     int err2 = 2 * err;
     if (err2 > -dy) {
       err -= dy;
