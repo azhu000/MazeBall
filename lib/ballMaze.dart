@@ -313,10 +313,8 @@ class _ballMazeDataWidgetState extends State<ballMaze> {
                 // // yForce = yBallAcceleration * ballMass;
 
                 _circlePosition = Offset(
-                    _circlePosition!.dx +
-                        (xVelocity + (0.5 * xBallAcceleration)),
-                    _circlePosition!.dy +
-                        (yVelocity + (0.5 * yBallAcceleration)));
+                    _circlePosition!.dx + (xVelocity + (xBallAcceleration)),
+                    _circlePosition!.dy + (yVelocity + (yBallAcceleration)));
 
                 // xVelocity = xVelocity + xForce;
                 // yVelocity = yVelocity + yForce;

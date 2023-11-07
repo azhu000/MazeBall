@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 
-String mazeAsset = 'assets/maze6.png';
+String mazeAsset = 'assets/maze7.png';
 Map<String, int> mappedPixels = {};
 
 Future<ui.Image> loadAssetImage(String imagePath) async {
@@ -208,8 +208,8 @@ Offset whereIntersect(int x1, int y1, int x2, int y2, Map<String, int> borders,
       // print(borders['${y1.toInt()},${x1.toInt()}'].toString());
       // print(Offset(y1.toDouble(), x1.toDouble()));
 
-      return Offset(prevX1.toDouble(),
-          prevY1.toDouble()); // The line intersects the pixel.
+      return Offset(
+          x1.toDouble(), y1.toDouble()); // The line intersects the pixel.
     }
     prevX1 = x1;
     prevY1 = y1;
@@ -228,23 +228,22 @@ Offset whereIntersect(int x1, int y1, int x2, int y2, Map<String, int> borders,
       x2.toDouble(), y2.toDouble()); // The line does not intersect the pixel.
 }
 
-List<int> direction(int x1, int y1, int x2, int y2){
+List<int> direction(int x1, int y1, int x2, int y2) {
   //int sx = x1 < x2 ? 1 : -1; //tells us what direction we're performing the transform
- // int sy = y1 < y2 ? 1 : -1;
-  int sx =0;
-  int sy =0;
-  if (x1 <x2){
+  // int sy = y1 < y2 ? 1 : -1;
+  int sx = 0;
+  int sy = 0;
+  if (x1 < x2) {
     sx = 1;
-  }else if( x1>x2){
+  } else if (x1 > x2) {
     sx = -1;
   }
 
-  if (y1 <y2){
+  if (y1 < y2) {
     sy = 1;
-  }else if( y1>y2){
+  } else if (y1 > y2) {
     sy = -1;
   }
 
-  return [sx,sy];
-
+  return [sx, sy];
 }

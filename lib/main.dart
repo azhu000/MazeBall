@@ -8,7 +8,7 @@ import 'package:wakelock/wakelock.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  String mazeAsset = 'assets/maze6.png';
+  String mazeAsset = 'assets/maze7.png';
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
