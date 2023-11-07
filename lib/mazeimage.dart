@@ -22,8 +22,8 @@ class _mazeImageState extends State<mazeImage> {
   double imgLeft = 4;
   // MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width / 2;
 
-  double _circleSize = 1;
-  Offset _circlePosition = Offset(130, 103); // second one is row first is col
+  double _circleSize = 10;
+  Offset _circlePosition = Offset(130,103); // second one is row first is col
   // Offset? prev_pos;
 
   double ballMass = 0.1;
@@ -77,7 +77,66 @@ class _mazeImageState extends State<mazeImage> {
             xVelocity = xVelocity + xBallAcceleration;
             yVelocity = yVelocity + yBallAcceleration;
 
-            //example current ball position is (130,103)
+            Offset _newPosition = Offset(
+                _circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)),
+                _circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)));
+
+            if (intersectsWall(_circlePosition.dx.toInt(), _circlePosition.dy.toInt(),_newPosition.dx.toInt(), _newPosition.dy.toInt(), mappedPixels)){
+              _newPosition = whereIntersect(_circlePosition.dx.toInt(), _circlePosition.dy.toInt(),_newPosition.dx.toInt(), _newPosition.dy.toInt(), mappedPixels, _circleSize.toInt());
+
+              // should find what direction going on
+               if(direction(_circlePosition.dx.toInt(), _circlePosition.dy.toInt(),_newPosition.dx.toInt(), _newPosition.dy.toInt())==[1,1]){
+                // change ball's movement upto the direction when it is intersect. If it is [1,1] which is upright
+
+                _newPosition = Offset(_newPosition.dx + _circleSize, _newPosition.dy);
+
+
+               }else if(direction(_circlePosition.dx.toInt(), _circlePosition.dy.toInt(),_newPosition.dx.toInt(), _newPosition.dy.toInt())==[-1,1]){
+                // change ball's movement upto the direction when it is intersect. If it is [-1,1] which is upleft, 
+                
+                _newPosition = Offset(_newPosition.dx, _newPosition.dy);
+
+               }else if(direction(_circlePosition.dx.toInt(), _circlePosition.dy.toInt(),_newPosition.dx.toInt(), _newPosition.dy.toInt())==[-1,-1]){
+                // change ball's movement upto the direction when it is intersect. If it is [-1,-1] which is bottomleft, 
+               
+                _newPosition = Offset(_newPosition.dx, _newPosition.dy+ _circleSize);
+
+               }else if(direction(_circlePosition.dx.toInt(), _circlePosition.dy.toInt(),_newPosition.dx.toInt(), _newPosition.dy.toInt())==[1,-1]){
+                // change ball's movement upto the direction when it is intersect. If it is [1,-1] which is bottomright, 
+              
+                _newPosition = Offset(_newPosition.dx+ _circleSize, _newPosition.dy+ _circleSize);
+
+
+               }else if(direction(_circlePosition.dx.toInt(), _circlePosition.dy.toInt(),_newPosition.dx.toInt(), _newPosition.dy.toInt())==[0,1]){
+                // change ball's movement upto the direction when it is intersect. If it is [0,1] which is up, 
+                
+                _newPosition = Offset(_newPosition.dx + (_circleSize~/2), _newPosition.dy);
+
+
+               }else if(direction(_circlePosition.dx.toInt(), _circlePosition.dy.toInt(),_newPosition.dx.toInt(), _newPosition.dy.toInt())==[-1,0]){
+                // change ball's movement upto the direction when it is intersect. If it is [-1,0] which is left, 
+                
+                _newPosition = Offset(_newPosition.dx, _newPosition.dy - (_circleSize~/2));
+
+               }else if(direction(_circlePosition.dx.toInt(), _circlePosition.dy.toInt(),_newPosition.dx.toInt(), _newPosition.dy.toInt())==[0,-1]){
+                // change ball's movement upto the direction when it is intersect. If it is [0,-1] which is down, 
+           
+                _newPosition = Offset(_newPosition.dx + (_circleSize~/2), _newPosition.dy - _circleSize);
+
+
+               }else if(direction(_circlePosition.dx.toInt(), _circlePosition.dy.toInt(),_newPosition.dx.toInt(), _newPosition.dy.toInt())==[1,0]){
+                // change ball's movement upto the direction when it is intersect. If it is [1,0] which is right, 
+              
+                _newPosition = Offset(_newPosition.dx + _circleSize, _newPosition.dy-(_circleSize~/2));
+
+
+               }
+                _circlePosition = _newPosition;
+            }
+
+            
+
+            // example current ball position is (130,103)
             // print(intersectsWall(_circlePosition.dx.toInt(),
             //     _circlePosition.dy.toInt(), 190, 103, mappedPixels));
             // print(_circlePosition.dx.toString() +
@@ -158,9 +217,9 @@ class _mazeImageState extends State<mazeImage> {
             //         .toString() +
             //     _circlePosition.toString());
 
-            // _circlePosition = Offset(
-            //     _circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)),
-            //     _circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)));
+                _circlePosition = Offset(
+                _circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)),
+                _circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)));
           }
 
           return Stack(
@@ -185,8 +244,8 @@ class _mazeImageState extends State<mazeImage> {
                             color: Colors.red,
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.black)),
-                        height: 1,
-                        width: 1,
+                        height: _circleSize,
+                        width: _circleSize,
                       ))),
               Positioned(
                 top: imgTop - 50,

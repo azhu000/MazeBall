@@ -57,7 +57,7 @@ class _NavBarState extends State<Navbar> {
                   icon: Icon(Icons.settings), label: 'Settings'),
               BottomNavigationBarItem(icon: Icon(Icons.circle), label: "Ball"),
               // BottomNavigationBarItem(
-              // icon: Icon(Icons.question_mark_sharp), label: "Maze")
+              // icon: Icon(Icons.question_mark_sharp), label: "Maze"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.question_mark_sharp), label: "Ball2"),
               BottomNavigationBarItem(

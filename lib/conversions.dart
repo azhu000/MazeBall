@@ -227,3 +227,24 @@ Offset whereIntersect(int x1, int y1, int x2, int y2, Map<String, int> borders,
   return Offset(
       x2.toDouble(), y2.toDouble()); // The line does not intersect the pixel.
 }
+
+List<int> direction(int x1, int y1, int x2, int y2){
+  //int sx = x1 < x2 ? 1 : -1; //tells us what direction we're performing the transform
+ // int sy = y1 < y2 ? 1 : -1;
+  int sx =0;
+  int sy =0;
+  if (x1 <x2){
+    sx = 1;
+  }else if( x1>x2){
+    sx = -1;
+  }
+
+  if (y1 <y2){
+    sy = 1;
+  }else if( y1>y2){
+    sy = -1;
+  }
+
+  return [sx,sy];
+
+}
