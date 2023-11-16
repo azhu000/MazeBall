@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'forgot_pw_page.dart';
+
 class LoginPage extends StatefulWidget {
   final VoidCallback showRegisterPage;
   const LoginPage({Key? key, required this.showRegisterPage}) : super(key: key);
@@ -124,8 +126,38 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              SizedBox(height: 20),
+              SizedBox(height: 10), 
 
+          
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal:25.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: (){
+                       Navigator.push(context,
+                        MaterialPageRoute(builder: (context){
+                          return ForgotPasswordPage();
+                        },
+                        ),
+                        );
+                      },
+                      child: Text(
+                          'Forgot password?',
+                          style: TextStyle( 
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+                
+               SizedBox(height: 20), 
+          
               //sign in button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -163,8 +195,8 @@ class _LoginPageState extends State<LoginPage> {
                   GestureDetector(
                     onTap: widget.showRegisterPage,
                     child: Text(
-                      'Register Now',
-                      style: TextStyle(
+                      ' Register Now',
+                      style: TextStyle( 
                         color: Colors.blue,
                         fontWeight: FontWeight.bold,
                       ),

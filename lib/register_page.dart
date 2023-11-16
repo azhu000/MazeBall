@@ -3,6 +3,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterPage extends StatefulWidget {
   final VoidCallback showLoginPage;
@@ -20,22 +21,50 @@ class _RegisterPageState extends State<RegisterPage>{
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmpasswordController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController(); //we can add text controller for anything. not sure what we need
 
   @override 
   void dispose(){
     _emailController.dispose();
     _passwordController.dispose();
     _confirmpasswordController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     super.dispose();
   }
-
+  
+  //User authentication
   Future signUp() async{
+    //create user
     if(passwordConfirmed()){
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
       email: _emailController.text.trim(), 
       password: _passwordController.text.trim(),
       );
+    
+    // Asdd user details
     }
+  }
+ 
+  
+  Future addUserDetails(String firstName, String lastName, String email) async{
+
+    await FirebaseFirestore.instance.collection('users').add({
+      'first name': firstName,
+      'last name': lastName,
+      'email address': email,
+    });
+
+    addUserDetails(
+      _firstNameController.text.trim(), 
+      _lastNameController.text.trim(), 
+      _emailController.text.trim(),
+      //if variable type is int
+      //int.parse(_emailController.text.trim()),
+      );
+
+
   }
 
   bool passwordConfirmed(){
@@ -61,13 +90,13 @@ class _RegisterPageState extends State<RegisterPage>{
               mainAxisAlignment: MainAxisAlignment.center,
               children:[
               
-              //logo
-              Icon(
-                Icons.phone_android,
-                size: 100
-                ),
+              // //logo
+              // Icon(
+              //   Icons.phone_android,
+              //   size: 100
+              //   ),
           
-                SizedBox(height: 50), 
+              //   SizedBox(height: 50), 
                 
               // Welcome message
               Text(
@@ -87,6 +116,52 @@ class _RegisterPageState extends State<RegisterPage>{
               ),
           
                SizedBox(height: 50),  
+              
+              // firstName
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: TextField(
+                  controller: _firstNameController,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide( color: Colors.white),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide( color: Colors.deepPurple),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    hintText: 'First Name',
+                    fillColor: Colors.grey[200],
+                    filled: true
+                  ),
+                ),
+              ),
+              
+              SizedBox(height: 10), 
+
+              // LaseName
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: TextField(
+                  controller: _lastNameController,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide( color: Colors.white),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide( color: Colors.deepPurple),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    hintText: 'Last Name',
+                    fillColor: Colors.grey[200],
+                    filled: true
+                  ),
+                ),
+              ),
+              
+              SizedBox(height: 10), 
           
               // email address
               Padding(
@@ -109,7 +184,7 @@ class _RegisterPageState extends State<RegisterPage>{
                 ),
               ),
               
-              SizedBox(height: 20),  
+              SizedBox(height: 10),  
           
               // password
               Padding(
@@ -133,7 +208,7 @@ class _RegisterPageState extends State<RegisterPage>{
                 ),
               ),
                 
-               SizedBox(height: 20), 
+               SizedBox(height: 10), 
 
               // confirm password
               Padding(
@@ -157,7 +232,7 @@ class _RegisterPageState extends State<RegisterPage>{
                 ),
               ),
                 
-               SizedBox(height: 20), 
+               SizedBox(height: 10), 
           
               //sign in button
               Padding(
@@ -197,7 +272,7 @@ class _RegisterPageState extends State<RegisterPage>{
                   GestureDetector(
                     onTap: widget.showLoginPage,
                     child: Text(
-                      'Login Now',
+                      ' Login Now',
                       style: TextStyle( 
                         color: Colors.blue,
                         fontWeight: FontWeight.bold,
