@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:myapp/newball.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'imagescan.dart';
 import 'conversions.dart';
@@ -20,14 +21,12 @@ class _mazeImageState extends State<mazeImage> {
 
   double imgTop = 100;
   double imgLeft = 4;
-  // MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width / 2;
 
-  double _circleSize = 5;
+  double _circleSize = 10;
   Offset _circlePosition = Offset(250, 350); // second one is row first is col
-  // Offset? prev_pos;
 
-  double ballMass = 0.1;
-  double gravConst = 0.1;
+  double ballMass = 1.0;
+  double gravConst = .5;
   double xVelocity = 0.0; // the x velocity component
   double yVelocity = 0.0; // the y velocity component
   double xBallAcceleration = 0.0;
@@ -36,7 +35,7 @@ class _mazeImageState extends State<mazeImage> {
       0.0; // this is for when i decide to factor in mass into the equationx
   double yForce = 0.0;
   double elasticity = // honestly a bad name will change eventually
-      2.0;
+      4;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +47,6 @@ class _mazeImageState extends State<mazeImage> {
           }
 
           final accelerometerData = snapshot.data!;
-          // print(mappedPixels);
 
           double x = accelerometerData.x,
               y = accelerometerData.y,
@@ -56,16 +54,20 @@ class _mazeImageState extends State<mazeImage> {
           double norm_Of_g = sqrt(accelerometerData.x * accelerometerData.x +
               accelerometerData.y * accelerometerData.y +
               accelerometerData.z * accelerometerData.z);
-          x = accelerometerData.x / norm_Of_g;
-          y = accelerometerData.y / norm_Of_g;
-          z = accelerometerData.z / norm_Of_g;
+          x = accelerometerData.x / norm_Of_g; // normalized x
+          y = accelerometerData.y / norm_Of_g; // normalized y
+          z = accelerometerData.z / norm_Of_g; // normalized z
 
-          double xInclination = -(asin(x));
-          double yInclination = (acos(y));
-          double zInclination = (atan(z));
+          double xInclination = -(asin(x)); // angle of x
+          double yInclination = (acos(y)); // angle of y
+          double zInclination = (atan(z)); // angle of z
+
+          // compute the angle of the phone
+          Offset _newPosition = Offset(0.0, 0.0);
+          Offset intersected = Offset(0.0, 0.0);
 
           if (snapshot.hasData) {
-            bool isCollided = false;
+            // bool isCollided = false;
             // print(mappedPixels[
             //     '${imgLeft.toInt() + 561},${imgTop.toInt() + 401}']); // remember is y,x not x,y (row, col) y = row, x = col
             // print('${imgLeft.toInt() + 561},${imgTop.toInt() + 401}');
@@ -75,245 +77,104 @@ class _mazeImageState extends State<mazeImage> {
             xBallAcceleration = xForce / ballMass;
             yBallAcceleration = yForce / ballMass;
 
-            xVelocity = xVelocity + xBallAcceleration;
-            yVelocity = yVelocity + yBallAcceleration;
+            xVelocity = xVelocity + (0.5 * xBallAcceleration);
+            yVelocity = yVelocity + (0.5 * yBallAcceleration);
 
-            Offset _newPosition = Offset(
-                (_circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)))
+            _newPosition = Offset(
+                (_circlePosition!.dx + (xVelocity + (xBallAcceleration)))
                     .toInt()
                     .toDouble(),
-                (_circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)))
+                (_circlePosition!.dy + (yVelocity + (yBallAcceleration)))
                     .toInt()
                     .toDouble());
-            Offset pointOfInterest = Offset(
-                (_circlePosition.dx + _circleSize / 2) +
-                    ((_circleSize / 2) * xInclination),
-                (_circlePosition.dy + _circleSize / 2) +
-                    ((_circleSize / 2) * yInclination));
-            // the only issue with this is that it does it from the radius instead.
+
+            Offset radius = Offset(
+                _circlePosition.dx + (0.5 * _circleSize).floor(),
+                _circlePosition.dy + (0.5 * _circleSize).floor());
+            // find the coordinate of the radius of the ball without moving the ball
 
             if (intersectsWall(
-                pointOfInterest.dx.toInt(),
-                pointOfInterest.dy.toInt(),
+                radius.dx.toInt(),
+                radius.dy.toInt(),
                 _newPosition.dx.toInt(),
                 _newPosition.dy.toInt(),
                 mappedPixels)) {
-              isCollided = true;
-              // this means our destination and poi has intersected.
-
+              // xBallAcceleration = 0;
+              // yBallAcceleration = 0;
+              xVelocity = xVelocity / elasticity;
+              yVelocity = yVelocity / elasticity;
+              // this means our destination and radius has intersected.
               // so what do we do when it intersects?
-
               // we need to redraw the ball in the valid location
-              // how do we do this? we need to reposition the ball in the opposite position from the
-              // inclinations that we caused it to hit
-              // then using the top left we need to calculate the valid offset
-              // this is all based on the assumption we're looking at the radius.
 
-              // if it is in a corner we can just take the length of the diagonal which is
-              // circlesize * root(2) and subtract it with the diameter of the circle
-
-              // we will want to offset it by how much?
-              //offset it by the point of interest - specifically the area in which uses the circlesize
+              // lets have the variables that determine the direction we intersected at
 
               _newPosition = whereIntersect(
-                  pointOfInterest.dx.toInt(),
-                  pointOfInterest.dy.toInt(),
+                  radius.dx.toInt(),
+                  radius.dy.toInt(),
                   _newPosition.dx.toInt(),
                   _newPosition.dy.toInt(),
                   mappedPixels,
-                  _circleSize
-                      .toInt()); // so this finds where the point of interest intersects with the wall
+                  _circleSize.toInt());
 
-              // now we must offset it by the value that was calculated in the point of interest
-              _newPosition = Offset(
-                  (_newPosition.dx -
-                      (_circleSize / 2) +
-                      ((_circleSize / 2) * xInclination)),
-                  (_newPosition.dy - ((_circleSize / 2) * yInclination)));
+              intersected = _newPosition;
+              // this finds the point of intersection with the radius and the wall
+              // now we must offset it by the value that was calculated for the radius
 
-              // we should also handle the next steps velocity and acceleration since we hit a wall here..
-              // this can probably be done with xinclination and y inclination
+              //now that new pos has the location in which it intersects lets find out what kind of wall it is
 
-              // xVelocity =
-              //     xVelocity / 2; // cuts the velocities in half (loses energy)
-              // yVelocity = yVelocity / 2;
+              List<bool> pixelCheck = checkPixel(_newPosition.dx.toInt(),
+                  _newPosition.dx.toInt(), mappedPixels);
 
-              if (xInclination < 0) {
-                //means we're going left
-                xBallAcceleration = -xBallAcceleration;
-                xVelocity = xVelocity / elasticity;
-                xVelocity = ((xVelocity * -cos(xInclination))).toDouble();
-                yBallAcceleration = 0;
-                // if (isCollided) {}
+              int wallTypeCheck = wallType((pixelCheck));
+
+              if (wallTypeCheck == 0) {
+                //horizontal wall
+                if (cos(yInclination) > 0) {
+                  //going down
+                  _newPosition = Offset((_newPosition.dx),
+                      (_newPosition.dy - (0.5 * _circleSize)));
+                } else if (cos(yInclination) < 0) {
+                  // going up
+                  _newPosition = Offset((_newPosition.dx),
+                      (_newPosition.dy + (0.5 * _circleSize)));
+                }
+              } else if (wallTypeCheck == 1) {
+                //vertical wall
+                if (sin(xInclination) > 0) {
+                  // going right
+                } else if (sin(xInclination) < 0) {
+                  // going left
+                }
               }
 
-              if (xInclination > 0) {
-                // means we're going right
-                xBallAcceleration = -xBallAcceleration;
-                xVelocity = xVelocity / elasticity;
-                xVelocity = ((xVelocity * -cos(xInclination))).toDouble();
-                yBallAcceleration = 0;
-                _newPosition = Offset(
-                    _circlePosition!.dx + (xVelocity + xBallAcceleration),
-                    _circlePosition!.dy + (yVelocity + yBallAcceleration));
-                // if (isCollided) {}
-              }
+              // now that its been redrawn lets figure out where we're hit the wall lets figure out what direction we were going
 
-              if (yInclination < 0) {
-                // means we're going up
-                xBallAcceleration = 0;
-                yVelocity = ((yVelocity * -sin(yInclination)).toDouble());
-                yBallAcceleration = -yBallAcceleration;
-                yVelocity = (yVelocity / elasticity);
-                _newPosition = Offset(
-                    _circlePosition!.dx + (xVelocity + xBallAcceleration),
-                    _circlePosition!.dy + (yVelocity + yBallAcceleration));
-                // if (isCollided) {}
-              }
+              // if (wallTypeCheck == 0) {
+              //   // we hit a horizontal wall
+              //   xBallAcceleration = 0;
+              //   yBallAcceleration = 0;
+              //   yVelocity = yVelocity * -sin(yInclination);
+              //   print("horizontal");
+              // } else if (wallTypeCheck == 1) {
+              //   yBallAcceleration = 0;
+              //   xBallAcceleration = 0;
+              //   yVelocity = xVelocity * -cos(xInclination);
+              //   print("vertical");
+              // } else {
+              //   print("Error?");
+              // }
 
-              if (yInclination > 0) {
-                // means we're going down
-                xBallAcceleration = 0;
-                yVelocity = ((yVelocity * -sin(yInclination)).toDouble());
-                yBallAcceleration = -yBallAcceleration;
-                yVelocity = (yVelocity / elasticity);
-                _newPosition = Offset(
-                    _circlePosition!.dx + (xVelocity + xBallAcceleration),
-                    _circlePosition!.dy + (yVelocity + yBallAcceleration));
-                // if (isCollided) {}
-              }
               _circlePosition = _newPosition;
+              // _newPosition = _circlePosition;
+              // _circlePosition = Offset(
+              //     _newPosition.dx + (xVelocity + (0.5 * xBallAcceleration)),
+              //     _newPosition.dy + (yVelocity + (0.5 * yBallAcceleration)));
             } else {
-              isCollided = false;
               _circlePosition = Offset(
-                  _circlePosition!.dx + (xVelocity + (xBallAcceleration)),
-                  _circlePosition!.dy + (yVelocity + (yBallAcceleration)));
+                  _circlePosition.dx + (xVelocity + (0.5 * xBallAcceleration)),
+                  _circlePosition.dy + (yVelocity + (0.5 * yBallAcceleration)));
             }
-
-            // this is the next transformation where the ball wants to go next!
-
-            // print("New Position without Offset: ${_newPosition.toString()}");
-
-            // if (intersectsWall(
-            //     _circlePosition.dx.toInt(),
-            //     _circlePosition.dy.toInt(),
-            //     _newPosition.dx.toInt(),
-            //     _newPosition.dy.toInt(),
-            //     mappedPixels)) {
-            //   _newPosition = whereIntersect(
-            //       _circlePosition.dx.toInt(),
-            //       _circlePosition.dy.toInt(),
-            //       _newPosition.dx.toInt(),
-            //       _newPosition.dy.toInt(),
-            //       mappedPixels,
-            //       _circleSize.toInt());
-
-            // xBallAcceleration = -xBallAcceleration;
-            // yBallAcceleration = -yBallAcceleration;
-            // xVelocity = xVelocity * -cos(xInclination / yInclination);
-            // yVelocity = yVelocity * -sin(xInclination / yInclination);
-
-            // xVelocity = xVelocity / 2;
-            // yVelocity = yVelocity / 2;
-
-            // if (xInclination < 0) { // this means we're going left
-
-            // }
-            // if (xInclination > 0) { // this means we're going right
-
-            // }
-
-            // if (yInclination < 0) { // this means we're going up
-
-            // }
-
-            // if (yInclination > 0) { // that means we're going down
-
-            // }
-            // }
-
-            // _circlePosition = _newPosition;
-
-            // example current ball position is (130,103)
-            // print(intersectsWall(_circlePosition.dx.toInt(),
-            //     _circlePosition.dy.toInt(), 190, 103, mappedPixels));
-            // print(_circlePosition.dx.toString() +
-            //     "," +
-            //     _circlePosition.dy.toString());
-            // print(whereIntersect(
-            //     _circlePosition.dx.toInt(),
-            //     _circlePosition.dy.toInt(),
-            //     190,
-            //     103,
-            //     mappedPixels,
-            //     _circleSize.toInt()));
-
-            // // _circlePosition = Offset(192.0, 100.0);
-            // _circlePosition = Offset(163.0, 103.0);
-
-            // _circlePosition = whereIntersect(
-            //     _circlePosition.dx.toInt(),
-            //     _circlePosition.dy.toInt(),
-            //     (_circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)))
-            //         .toInt(),
-            //     (_circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)))
-            //         .toInt(),
-            //     mappedPixels,
-            //     _circleSize.toInt());
-
-            // print(xVelocity);
-            // print(yVelocity);
-
-            // xForce = xBallAcceleration * ballMass;
-            // yForce = yBallAcceleration * ballMass;
-
-            // _circlePosition = intersectsWall(
-            //     _circlePosition.dx.toInt(),
-            //     _circlePosition.dy.toInt(),
-            //     (_circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)))
-            //         .toInt(),
-            //     (_circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)))
-            //         .toInt(),
-            //     mappedPixels,
-            //     _circlePosition);
-
-            // if (intersectsWall(
-            //   _circlePosition.dx.toInt(),
-            //   _circlePosition.dy.toInt(),
-            //   (_circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)))
-            //       .toInt(),
-            //   (_circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)))
-            //       .toInt(),
-            //   mappedPixels,
-            // )) {
-            //   // xBallAcceleration = 0;
-            //   // yBallAcceleration = 0;
-            //   // xVelocity = xVelocity * -cos(xInclination);
-            //   // yVelocity = yVelocity * -sin(yInclination);
-            //   _circlePosition = whereIntersect(
-            //     _circlePosition.dx.toInt(),
-            //     _circlePosition.dy.toInt(),
-            //     (_circlePosition!.dx + (xVelocity + (0.5 * xBallAcceleration)))
-            //         .toInt(),
-            //     (_circlePosition!.dy + (yVelocity + (0.5 * yBallAcceleration)))
-            //         .toInt(),
-            //     mappedPixels,
-            //   );
-            // }
-
-            // print(intersectsWall(
-            //             _circlePosition.dx.toInt(),
-            //             _circlePosition.dy.toInt(),
-            //             (_circlePosition!.dx +
-            //                     (xVelocity + (0.5 * xBallAcceleration)))
-            //                 .toInt(),
-            //             (_circlePosition!.dy +
-            //                     (yVelocity + (0.5 * yBallAcceleration)))
-            //                 .toInt(),
-            //             mappedPixels,
-            //             _circlePosition)
-            //         .toString() +
-            //     _circlePosition.toString());
           }
 
           return Stack(
@@ -362,6 +223,8 @@ class _mazeImageState extends State<mazeImage> {
                         imgTop,
                         imgLeft);
 
+                    // for (var i in mappedPixels)
+
                     xBallAcceleration = 0;
                     yBallAcceleration = 0;
                     xVelocity = 0;
@@ -398,6 +261,45 @@ class _mazeImageState extends State<mazeImage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Column(children: [
+                    SizedBox(height: MediaQuery.of(context).size.height / 1.4),
+                    Text("Ball Radius:"),
+                    Text(
+                        "X: ${(_circlePosition.dx + (0.5 * _circleSize)).toInt()}"),
+                    Text(
+                        "Y: ${(_circlePosition.dy + (0.5 * _circleSize)).toInt()}"),
+                    // Text("Z: ${accelerometerData.z.toStringAsFixed(4)}"),
+                  ]),
+                  Column(children: [
+                    SizedBox(height: MediaQuery.of(context).size.height / 1.4),
+                    Text("Pixel Collided:"),
+                    Text("xPos: ${intersected!.dx.toInt().toString()}"),
+                    Text("yPos: ${intersected!.dy.toInt().toString()}"),
+                  ]),
+                  Column(children: [
+                    SizedBox(height: MediaQuery.of(context).size.height / 1.4),
+                    Text("Angle:"),
+                    Text("X: ${sin(xInclination).toStringAsFixed(2)}"),
+                    Text("Y: ${cos(yInclination).toStringAsFixed(2)}"),
+                  ]),
+                  Column(children: [
+                    SizedBox(height: MediaQuery.of(context).size.height / 1.4),
+                    Text("Velocity:"),
+                    Text("X: ${xVelocity.toStringAsFixed(2)}"),
+                    Text("Y: ${yVelocity.toStringAsFixed(2)}"),
+                  ]),
+                  Column(children: [
+                    SizedBox(height: MediaQuery.of(context).size.height / 1.4),
+                    Text("Acceleration:"),
+                    Text("X: ${(xBallAcceleration).toStringAsFixed(2)}"),
+                    Text("Y: ${(yBallAcceleration).toStringAsFixed(2)}"),
+                  ])
+                ],
+              )),
+              Center(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(children: [
                     SizedBox(height: MediaQuery.of(context).size.height / 1.25),
                     Text("AccelData:"),
                     Text("X: ${accelerometerData.x.toStringAsFixed(4)}"),
@@ -413,8 +315,20 @@ class _mazeImageState extends State<mazeImage> {
                   Column(children: [
                     SizedBox(height: MediaQuery.of(context).size.height / 1.25),
                     Text("Angle:"),
-                    Text("X: ${(sin(xInclination)).toStringAsFixed(2)}"),
-                    Text("Y: ${(cos(yInclination)).toStringAsFixed(2)}"),
+                    Text("X: ${sin(xInclination).toStringAsFixed(2)}"),
+                    Text("Y: ${cos(yInclination).toStringAsFixed(2)}"),
+                  ]),
+                  Column(children: [
+                    SizedBox(height: MediaQuery.of(context).size.height / 1.25),
+                    Text("Velocity:"),
+                    Text("X: ${xVelocity.toStringAsFixed(2)}"),
+                    Text("Y: ${yVelocity.toStringAsFixed(2)}"),
+                  ]),
+                  Column(children: [
+                    SizedBox(height: MediaQuery.of(context).size.height / 1.25),
+                    Text("Acceleration:"),
+                    Text("X: ${(xBallAcceleration).toStringAsFixed(2)}"),
+                    Text("Y: ${(yBallAcceleration).toStringAsFixed(2)}"),
                   ])
                 ],
               )),

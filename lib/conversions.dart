@@ -247,3 +247,58 @@ List<int> direction(int x1, int y1, int x2, int y2) {
 
   return [sx, sy];
 }
+
+List<bool> checkPixel(int x, int y, Map<String, int> walls) {
+  bool north = false;
+  bool east = false;
+  bool south = false;
+  bool west = false;
+
+  // we know that the current pixel is a wall so we need to find out what kind of wall
+  // mappedPixels['$i,$j'] is how we call it
+
+  if (walls['$x,${y - 1}'] == 1) {
+    // if the north pixel is a wall
+    north = true;
+  }
+
+  if (walls['${x + 1},$y'] == 1) {
+    // if the east pixel is a wall
+    east = true;
+  }
+
+  if (walls['$x,${y + 1}'] == 1) {
+    // if the south pixel is a wall
+    south = true;
+  }
+
+  if (walls['${x + 1},$y'] == 1) {
+    // if the west pixel is a wall
+    west = true;
+  }
+
+  return [north, east, south, west];
+}
+
+int wallType(List<bool> directions) {
+  // directions [0] = north
+  // directions [1] = east
+  // directions [2] = south
+  // directions [3] = west
+
+  // return type 0 for horizontal
+  // return type 1 for vertical
+
+  if (directions[0] & directions[2]) {
+    // if the north pixel and south pixel are walls
+    // we might be at a vertical wall
+    return 1;
+  } else if (directions[1] & directions[3]) {
+    // if the east and west pixels are walls
+    // we might be at a horizontal wall
+    return 0;
+  } else {
+    // somehow we have an error
+    return -1;
+  }
+}
