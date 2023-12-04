@@ -31,11 +31,11 @@ class _NavBarState extends State<Navbar> {
   final List<Widget> _pages = [
     HomePage(),
     //UserHome(),
-    UserSearch(),
+    //UserSearch(),
     UserSettings(),
-    BallGyro(),
+    //BallGyro(),
     // MazeApp()
-    newBall(),
+    //newBall(),
     SensorDataWidget(),
     ballMaze(),
     mazeImage()
@@ -50,22 +50,24 @@ class _NavBarState extends State<Navbar> {
             onTap: _navigateBottomBar,
             type: BottomNavigationBarType.fixed,
             items: [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home', backgroundColor: Colors.deepPurple),
+              //BottomNavigationBarItem(
+                  //icon: Icon(Icons.search), label: 'Search'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.search), label: 'Search'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), label: 'Settings'),
-              BottomNavigationBarItem(icon: Icon(Icons.circle), label: "Ball"),
+                  icon: Icon(Icons.settings), label: 'Settings', backgroundColor: Colors.deepPurple),
+              //BottomNavigationBarItem(icon: Icon(Icons.circle), label: "Ball"),
               // BottomNavigationBarItem(
               // icon: Icon(Icons.question_mark_sharp), label: "Maze"),
+              //BottomNavigationBarItem(
+                  //icon: Icon(Icons.question_mark_sharp), label: "Ball2"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.question_mark_sharp), label: "Ball2"),
+                  icon: Icon(Icons.question_mark_sharp), label: "test", backgroundColor: Colors.deepPurple),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.question_mark_sharp), label: "test"),
+                  icon: Icon(Icons.circle_sharp), label: "BallMaze", backgroundColor: Colors.deepPurple),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.circle_sharp), label: "BallMaze"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.circle_sharp), label: "Maze Image"),
-            ]));
+                  icon: Icon(Icons.circle_sharp), label: "Maze Image", backgroundColor: Colors.deepPurple),
+            ],
+            
+            selectedItemColor: Colors.deepPurple,));
   }
 }

@@ -41,22 +41,25 @@ class _LoginPageState extends State<LoginPage> {
           child: SingleChildScrollView(
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              // Welcome message
+              Text(
+                'MAZE BALL',
+                style: GoogleFonts.bebasNeue(
+                    fontSize: 70, color: Colors.deepPurple),
+              ),
+
+              SizedBox(height: 20),
+
               //logo
               Icon(Icons.phone_android, size: 100),
 
-              SizedBox(height: 50),
+              SizedBox(height: 20),
 
-              // Welcome message
-              Text(
-                'Hello Again!',
-                style: GoogleFonts.bebasNeue(
-                  fontSize: 54,
-                ),
-              ),
-
-              SizedBox(height: 10),
-
-              Text('Welcome back! you\'ve been missed!',
+              Text('Welcome back :D',
+                  style: TextStyle(
+                    fontSize: 20,
+                  )),
+              Text('You\'ve been missed!',
                   style: TextStyle(
                     fontSize: 20,
                   )),
@@ -74,7 +77,8 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.deepPurple),
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 179, 157, 219)),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       hintText: 'Email',
@@ -126,38 +130,38 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              SizedBox(height: 10), 
-
-          
+              SizedBox(height: 10),
 
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal:25.0),
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     GestureDetector(
-                      onTap: (){
-                       Navigator.push(context,
-                        MaterialPageRoute(builder: (context){
-                          return ForgotPasswordPage();
-                        },
-                        ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return ForgotPasswordPage();
+                            },
+                          ),
                         );
                       },
                       child: Text(
-                          'Forgot password?',
-                          style: TextStyle( 
+                        'Forgot password?',
+                        style: TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.bold,
-                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-                
-               SizedBox(height: 20), 
-          
+
+              SizedBox(height: 20),
+
               //sign in button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -184,6 +188,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               SizedBox(height: 25),
+              
               //not a member? register now -> register page
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -196,7 +201,7 @@ class _LoginPageState extends State<LoginPage> {
                     onTap: widget.showRegisterPage,
                     child: Text(
                       ' Register Now',
-                      style: TextStyle( 
+                      style: TextStyle(
                         color: Colors.blue,
                         fontWeight: FontWeight.bold,
                       ),

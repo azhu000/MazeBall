@@ -89,16 +89,8 @@ class _RegisterPageState extends State<RegisterPage>{
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children:[
-              
-              // //logo
-              // Icon(
-              //   Icons.phone_android,
-              //   size: 100
-              //   ),
-          
-              //   SizedBox(height: 50), 
-                
-              // Welcome message
+             
+             // Welcome message
               Text(
                 'Hello There!',
                 style: GoogleFonts.bebasNeue(
