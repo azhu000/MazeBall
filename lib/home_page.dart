@@ -258,7 +258,7 @@ class _HomePageState extends State<HomePage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            )
+            ),
             // Navbar()
           ],
         ),

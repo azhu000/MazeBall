@@ -192,7 +192,7 @@ class _MazeEasyState extends State<MazeEasy> {
                   leading: IconButton(
                       onPressed: () {
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (BuildContext context) => HomePage()));
+                            builder: (BuildContext context) => Navbar()));
                       },
                       icon: Icon(Icons.arrow_back_ios)),
                   actions: [

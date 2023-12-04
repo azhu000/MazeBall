@@ -10,9 +10,10 @@ import 'imagescan.dart';
 import 'conversions.dart';
 import 'home_page.dart';
 import 'dart:math';
+import 'navbar.dart';
 
 class MazeHard extends StatefulWidget {
-  const MazeHard({Key? key}):super(key: key);
+  const MazeHard({Key? key}) : super(key: key);
 
   @override
   _MazeHardState createState() => _MazeHardState();
@@ -23,7 +24,7 @@ class _MazeHardState extends State<MazeHard> {
   bool isPlaying = false;
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     _controller.dispose();
   }
@@ -31,39 +32,39 @@ class _MazeHardState extends State<MazeHard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar:
-          AppBar(
-            title: const Text('Hard'), 
-            backgroundColor: Colors.deepPurple,
-            leading: IconButton(onPressed: (){
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(BuildContext context) => HomePage()));
-
-            }, 
+      appBar: AppBar(
+        title: const Text('Hard'),
+        backgroundColor: Colors.deepPurple,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (BuildContext context) => Navbar()));
+            },
             icon: Icon(Icons.arrow_back_ios)),
-            actions: [IconButton(onPressed: (){
-              if (isPlaying){
-                _controller.stop();
-              }else{
-                _controller.play();
-              }
-              isPlaying = !isPlaying;
-            },          
-            icon: Icon(Icons.emoji_emotions)),],
-            
-            ),
-          
-    
-    body: Stack( 
-      alignment: Alignment.topCenter,
-      children: [
-        // Other widgets in the body
-        // Add the ConfettiWidget here
-        ConfettiWidget(
-          confettiController: _controller,
-          blastDirection: 0,
-        ),
-      ],
-    ),
-  );
+        actions: [
+          IconButton(
+              onPressed: () {
+                if (isPlaying) {
+                  _controller.stop();
+                } else {
+                  _controller.play();
+                }
+                isPlaying = !isPlaying;
+              },
+              icon: Icon(Icons.emoji_emotions)),
+        ],
+      ),
+      body: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          // Other widgets in the body
+          // Add the ConfettiWidget here
+          ConfettiWidget(
+            confettiController: _controller,
+            blastDirection: 0,
+          ),
+        ],
+      ),
+    );
   }
 }
