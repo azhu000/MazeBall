@@ -11,9 +11,10 @@ import 'conversions.dart';
 import 'home_page.dart';
 import 'dart:math';
 import 'package:google_fonts/google_fonts.dart';
+import 'navbar.dart';
 
 class MazeEasy extends StatefulWidget {
-  const MazeEasy({Key? key}):super(key: key);
+  const MazeEasy({Key? key}) : super(key: key);
 
   @override
   _MazeEasyState createState() => _MazeEasyState();
@@ -24,7 +25,7 @@ class _MazeEasyState extends State<MazeEasy> {
   int? width = Image(image: AssetImage(mazeAsset)).width?.toInt();
   int? height = Image(image: AssetImage(mazeAsset)).height?.toInt();
 
-  double imgTop = 100;
+  double imgTop = 140;
   double imgLeft = 4;
 
   double _circleSize = 10;
@@ -182,30 +183,34 @@ class _MazeEasyState extends State<MazeEasy> {
             }
           }
 
-
           return Stack(
             children: <Widget>[
               Scaffold(
-       appBar:
-          AppBar(
-            title: const Text('Easy'), 
-            backgroundColor: Colors.deepPurple,
-            leading: IconButton(onPressed: (){
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(BuildContext context) => HomePage()));
-
-            }, 
-            icon: Icon(Icons.arrow_back_ios)),
-            actions: [IconButton(onPressed: (){
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(BuildContext context) => MazeMedium()));
-
-            }, 
-            icon: Icon(Icons.arrow_forward_ios)),],
-    ),
-    floatingActionButton: FloatingActionButton(
-      onPressed: () {},
-      backgroundColor: Colors.deepPurple,
-      child: Icon(Icons.settings) ),
-    ),
+                appBar: AppBar(
+                  title: const Text('Easy'),
+                  backgroundColor: Colors.deepPurple,
+                  leading: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (BuildContext context) => HomePage()));
+                      },
+                      icon: Icon(Icons.arrow_back_ios)),
+                  actions: [
+                    IconButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      MazeMedium()));
+                        },
+                        icon: Icon(Icons.arrow_forward_ios)),
+                  ],
+                ),
+                floatingActionButton: FloatingActionButton(
+                    onPressed: () {},
+                    backgroundColor: Colors.deepPurple,
+                    child: Icon(Icons.settings)),
+              ),
               Positioned(
                 top: imgTop,
                 left: imgLeft,
@@ -361,9 +366,6 @@ class _MazeEasyState extends State<MazeEasy> {
               )),
             ],
           );
-        }); 
-    
-  } 
-}   
-    
-    
+        });
+  }
+}

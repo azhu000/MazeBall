@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/maze_easy.dart';
 import 'package:myapp/maze_hard.dart';
 import 'package:myapp/maze_medium.dart';
+import 'package:myapp/navbar.dart';
 import 'mazeimage.dart';
 
 class HomePage extends StatefulWidget {
@@ -75,7 +76,8 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(BuildContext context) => MazeEasy()));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (BuildContext context) => MazeEasy()));
                 },
                 child: Container(
                   padding: const EdgeInsets.all(12),
@@ -108,7 +110,8 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
               child: GestureDetector(
                 onTap: () {
-                   Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(BuildContext context) => MazeMedium()));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (BuildContext context) => MazeMedium()));
                 },
                 child: Container(
                   padding: const EdgeInsets.all(12),
@@ -140,7 +143,8 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
               child: GestureDetector(
                 onTap: () {
-                   Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(BuildContext context) => MazeHard()));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (BuildContext context) => MazeHard()));
                 },
                 child: Container(
                   padding: const EdgeInsets.all(12),
@@ -255,6 +259,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             )
+            // Navbar()
           ],
         ),
       )),

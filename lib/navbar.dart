@@ -46,28 +46,39 @@ class _NavBarState extends State<Navbar> {
     return Scaffold(
         body: _pages[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _selectedIndex,
-            onTap: _navigateBottomBar,
-            type: BottomNavigationBarType.fixed,
-            items: [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home', backgroundColor: Colors.deepPurple),
-              //BottomNavigationBarItem(
-                  //icon: Icon(Icons.search), label: 'Search'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), label: 'Settings', backgroundColor: Colors.deepPurple),
-              //BottomNavigationBarItem(icon: Icon(Icons.circle), label: "Ball"),
-              // BottomNavigationBarItem(
-              // icon: Icon(Icons.question_mark_sharp), label: "Maze"),
-              //BottomNavigationBarItem(
-                  //icon: Icon(Icons.question_mark_sharp), label: "Ball2"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.question_mark_sharp), label: "test", backgroundColor: Colors.deepPurple),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.circle_sharp), label: "BallMaze", backgroundColor: Colors.deepPurple),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.circle_sharp), label: "Maze Image", backgroundColor: Colors.deepPurple),
-            ],
-            
-            selectedItemColor: Colors.deepPurple,));
+          currentIndex: _selectedIndex,
+          onTap: _navigateBottomBar,
+          type: BottomNavigationBarType.fixed,
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+                backgroundColor: Colors.deepPurple),
+            //BottomNavigationBarItem(
+            //icon: Icon(Icons.search), label: 'Search'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: 'Settings',
+                backgroundColor: Colors.deepPurple),
+            //BottomNavigationBarItem(icon: Icon(Icons.circle), label: "Ball"),
+            // BottomNavigationBarItem(
+            // icon: Icon(Icons.question_mark_sharp), label: "Maze"),
+            //BottomNavigationBarItem(
+            //icon: Icon(Icons.question_mark_sharp), label: "Ball2"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.question_mark_sharp),
+                label: "test",
+                backgroundColor: Colors.deepPurple),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.circle_sharp),
+                label: "BallMaze",
+                backgroundColor: Colors.deepPurple),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.circle_sharp),
+                label: "Maze Image",
+                backgroundColor: Colors.deepPurple),
+          ],
+          selectedItemColor: Colors.deepPurple,
+        ));
   }
 }
