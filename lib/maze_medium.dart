@@ -21,14 +21,14 @@ class MazeMedium extends StatefulWidget {
 }
 
 class _MazeMediumState extends State<MazeMedium> {
-    Image myimg = Image(image: AssetImage(mazeAsset));
-  int? width = Image(image: AssetImage(mazeAsset)).width?.toInt();
-  int? height = Image(image: AssetImage(mazeAsset)).height?.toInt();
+  Image myimg = Image(image: AssetImage('assets/maze7.png'));
+  int? width = Image(image: AssetImage('assets/maze7.png')).width?.toInt();
+  int? height = Image(image: AssetImage('assets/maze7.png')).height?.toInt();
 
   double imgTop = 140;
   double imgLeft = 4;
 
-  double _circleSize = 10;
+  double _circleSize = 0;
   Offset _circlePosition = Offset(250, 350); // second one is row first is col
 
   double ballMass = 1.0;
@@ -212,7 +212,6 @@ class _MazeMediumState extends State<MazeMedium> {
                     backgroundColor: Colors.deepPurple,
                     child: Icon(Icons.settings)),
               ),
-              
               Positioned(
                 top: imgTop,
                 left: imgLeft,
@@ -236,7 +235,6 @@ class _MazeMediumState extends State<MazeMedium> {
                         height: _circleSize,
                         width: _circleSize,
                       ))),
-                      
               Positioned(
                 top: imgTop + 450,
                 left: imgLeft + 150,
@@ -246,7 +244,8 @@ class _MazeMediumState extends State<MazeMedium> {
                     // Process the RGBA values here.
                     List<List<int>> vals = await rgbaArray(rgbaValues);
 
-                    List<int> imageDimensions = await getDimensions(mazeAsset);
+                    List<int> imageDimensions =
+                        await getDimensions('assets/maze7.png');
 
                     final convert = await convertPixels(
                         vals, imageDimensions[1], imageDimensions[0]);
@@ -284,18 +283,20 @@ class _MazeMediumState extends State<MazeMedium> {
 
                     // print(mappedPixels
                     //     .length); // validated, the number of key,value pairs in mappedPixels is equal to WxH of the image.
-                    _circlePosition = Offset(250, 350);
+                    _circlePosition = Offset(200, 100);
+                    _circleSize = 10;
                     print(
                         'Image dimensions: ${imageDimensions[0]} x ${imageDimensions[1]}, # pixels equals ${imageDimensions[0] * imageDimensions[1]}');
                   },
                   child: Text('Start'),
                   style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple[200],
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                textStyle: TextStyle(
-                fontSize: 24,
-                //fontWeight: FontWeight.bold
-                )),
+                      backgroundColor: Colors.deepPurple[200],
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                      textStyle: TextStyle(
+                        fontSize: 24,
+                        //fontWeight: FontWeight.bold
+                      )),
                 ),
               ),
             ],
