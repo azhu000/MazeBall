@@ -20,6 +20,7 @@ class MazeHard extends StatefulWidget {
 }
 
 class _MazeHardState extends State<MazeHard> {
+      
   final _controller = ConfettiController();
   bool isPlaying = false;
 

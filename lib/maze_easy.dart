@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:myapp/maze_hard.dart';
 import 'package:myapp/maze_medium.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'imagescan.dart';
@@ -184,6 +185,7 @@ class _MazeEasyState extends State<MazeEasy> {
           }
 
           return Stack(
+            alignment: Alignment.center,
             children: <Widget>[
               Scaffold(
                 appBar: AppBar(
@@ -201,7 +203,7 @@ class _MazeEasyState extends State<MazeEasy> {
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      MazeMedium()));
+                                      MazeHard()));
                         },
                         icon: Icon(Icons.arrow_forward_ios)),
                   ],
@@ -234,9 +236,10 @@ class _MazeEasyState extends State<MazeEasy> {
                         height: _circleSize,
                         width: _circleSize,
                       ))),
+                      
               Positioned(
-                top: imgTop - 50,
-                left: imgLeft,
+                top: imgTop + 450,
+                left: imgLeft + 150,
                 child: ElevatedButton(
                   onPressed: () async {
                     List<int> rgbaValues = await captureWidgetToRGBAValues(key);
@@ -285,7 +288,14 @@ class _MazeEasyState extends State<MazeEasy> {
                     print(
                         'Image dimensions: ${imageDimensions[0]} x ${imageDimensions[1]}, # pixels equals ${imageDimensions[0] * imageDimensions[1]}');
                   },
-                  child: Text('Scan Maze'),
+                  child: Text('Start'),
+                  style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurple[200],
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                textStyle: TextStyle(
+                fontSize: 24,
+                //fontWeight: FontWeight.bold
+                )),
                 ),
               ),
             ],
