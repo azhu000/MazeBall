@@ -8,3 +8,5 @@ Using the mapped boundaries, the ball is not permitted to move through the walls
 This was done via ultizing the Bresenham Line Drawing Algoirthm to determine if the updated position of the ball intersects with a known wall coordinate.
 
 ![alt text](https://github.com/azhu000/MazeBall/blob/master/example.png)
+
+![alt text](https://github.com/azhu000/MazeBall/blob/master/sample.gif)
