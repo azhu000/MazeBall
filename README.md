@@ -1,16 +1,9 @@
-# myapp
+A physics simulation of a ball moving through a maze by utilizing the sensors (mainly the accelerometer and gyroscope) from a mobile device such as a phone or tablet. 
 
-A new Flutter project.
+Given a maze, where the boundaries of the maze are black, an algorithm scans the image of the maze and maps the coordinates of the maze to be classified open space or a wall. 
 
-## Getting Started
+Using physics and the sensors of the phone, a ball is given simulated movement depending on angle and tilt of the mobile device. 
 
-This project is a starting point for a Flutter application.
+Using the mapped boundaries, the ball is not permitted to move through the walls of the maze when it is displaced during each update of the sensor. 
+This was done via ultizing the Bresenham Line Drawing Algoirthm to determine if the updated position of the ball intersects with a known wall coordinate.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
